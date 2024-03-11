@@ -1,0 +1,76 @@
+<!doctype html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <link rel="stylesheet" href="" th:href="@{/css/style.css}">
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Weather</title>
+</head>
+<body>
+<header>
+</header>
+<div class="weather-container">
+    <form action="http://localhost:8080/api/v1/weather" method="get">
+        <label for="word"></label><input type="text" id="word" name="word" required>
+        <input type="submit" value="Search">
+    </form>
+    <!-- Верхний слой -->
+  <img th:src="${icon}" alt="">
+    <div class="top-layer">
+        <div class="weather-info">
+            <h2>Температура</h2>
+            <div th:if="${weatherForecast!=null}">
+                <p><span th:text="${weatherForecast.main.temperature}"></span>C </p>
+            </div>
+        </div>
+        <h2>Погода</h2>
+        <div th:if="${weatherForecast!=null}">
+            <div th:each="weather : ${weatherForecast.weather}">
+                <p><span th:text="${weather.weatherStatus}"></span></p>
+            </div>
+        </div>
+    </div>
+    <!-- Нижний слой -->
+    <div class="bottom-layer">
+        <div class="weather-details">
+            <h3>Влажность</h3>
+            <div th:if="${weatherForecast!=null}">
+                <p><span th:text="${weatherForecast.main.humidity}"></span>% </p>
+            </div>
+        </div>
+        <div class="weather-details">
+            <h3>Давление</h3>
+            <div th:if="${weatherForecast!=null}">
+                <p><span th:text="${weatherForecast.main.pressure}"></span>hPa </p>
+            </div>
+        </div>
+        <div class="weather-details">
+            <h3>Ветер</h3>
+            <div th:if="${weatherForecast!=null}">
+                <p><span th:text="${weatherForecast.wind.speed}"></span>m/s </p>
+            </div>
+        </div>
+        <div class="weather-details">
+            <h3>Видимость</h3>
+            <div th:if="${weatherForecast!=null}">
+                <p><span th:text="${weatherForecast.visibility}"></span> </p>
+            </div>
+        </div>
+        <div class="weather-details">
+            <h3>Восход солнца</h3>
+            <div th:if="${weatherForecast!=null}">
+                <p><span th:text="${weatherForecast.time.convertedSunriseTime}"></span> </p>
+            </div>
+        </div>
+        <div class="weather-details">
+            <h3>Закат солнца</h3>
+            <div th:if="${weatherForecast!=null}">
+                <p><span th:text="${weatherForecast.time.convertedSunsetTime}"></span> </p>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>
