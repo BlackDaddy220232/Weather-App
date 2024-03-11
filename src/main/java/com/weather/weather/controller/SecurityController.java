@@ -47,9 +47,9 @@ public class SecurityController {
 
 
     @PostMapping("/signup")
-    ResponseEntity<?> signup(@RequestBody SignUpRequest signUpRequest) {
-        if (  userRepository.existsUserByUsername(signUpRequest.getUsername())) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("This nickname already exist");
+    ResponseEntity<String> signup(@RequestBody SignUpRequest signUpRequest) {
+        if (userRepository.existsUserByUsername(signUpRequest.getUsername()).booleanValue()) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("This nickname already exists");
         }
         User user = new User();
         user.setUsername(signUpRequest.getUsername());
@@ -60,7 +60,7 @@ public class SecurityController {
     }
 
     @PostMapping("/signin")
-    ResponseEntity<?> signin(@RequestBody SignInRequest signInRequest) {
+    ResponseEntity<String> signin(@RequestBody SignInRequest signInRequest) {
         Authentication authentication = null;
         try {
             authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(signInRequest.getUsername(), signInRequest.getPassword()));

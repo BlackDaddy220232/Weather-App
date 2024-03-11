@@ -1,11 +1,11 @@
 # Weather App
 
 ## SONAR OVERVIEW
-[![Code Smells](https://sonarcloud.io/api/project_badges/measure?project=BlackDaddy220232_Weather_App&metric=code_smells)](https://sonarcloud.io/summary/new_code?id=BlackDaddy220232_Weather_App)
-[![Vulnerabilities](https://sonarcloud.io/api/project_badges/measure?project=BlackDaddy220232_Weather_App&metric=vulnerabilities)](https://sonarcloud.io/summary/new_code?id=BlackDaddy220232_Weather_App)
-[![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=BlackDaddy220232_Weather_App&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=BlackDaddy220232_Weather_App)
+[![Code Smells](https://sonarcloud.io/api/project_badges/measure?project=BlackDaddy220232_Weather-App&metric=code_smells)](https://sonarcloud.io/summary/new_code?id=BlackDaddy220232_Weather-App)
+[![Vulnerabilities](https://sonarcloud.io/api/project_badges/measure?project=BlackDaddy220232_Weather-App&metric=vulnerabilities)](https://sonarcloud.io/summary/new_code?id=BlackDaddy220232_Weather-App)
+[![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=BlackDaddy220232_Weather-App&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=BlackDaddy220232_Weather-App)
 
-https://sonarcloud.io/summary/new_code?id=BlackDaddy220232_Weather_App
+https://sonarcloud.io/summary/overall?id=BlackDaddy220232_Weather-App
 
 # What is it?
 

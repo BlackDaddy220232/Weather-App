@@ -44,25 +44,26 @@ public class TokenFilter extends OncePerRequestFilter {
         UsernamePasswordAuthenticationToken auth = null;
         List<GrantedAuthority> authorities = new ArrayList<>();
         authorities.add(new SimpleGrantedAuthority("ROLE_USER"));
+        if (!request.getRequestURI().equals("/auth/signin")&&!(request.getRequestURI().equals("/auth/signup"))) {
+            try {
+                String headerAuth = request.getHeader("Authorization");
+                if (headerAuth != null && headerAuth.startsWith("Bearer ")) {
+                    jwt = headerAuth.substring(7);
+                }
+                if (jwt != null) {
+                    username = jwtCore.getNameFromJwt(jwt);
+                }
+                if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
+                    userDetails = userDetailsService.loadUserByUsername(username);
+                    auth = new UsernamePasswordAuthenticationToken(
+                            userDetails,
+                            null, authorities);
+                    SecurityContextHolder.getContext().setAuthentication(auth);
+                }
 
-        try{
-            String headerAuth = request.getHeader("Authorization");
-            if(headerAuth!= null && headerAuth.startsWith("Bearer ")){
-                jwt = headerAuth.substring(7);
+            } catch (Exception e) {
+                logger.error("JWT token error: {}", e);
             }
-            if(jwt != null){
-                username = jwtCore.getNameFromJwt(jwt);
-            }
-            if(username != null && SecurityContextHolder.getContext().getAuthentication() == null){
-                userDetails = userDetailsService.loadUserByUsername(username);
-                auth = new UsernamePasswordAuthenticationToken(
-                        userDetails,
-                        null,authorities);
-                SecurityContextHolder.getContext().setAuthentication(auth);
-            }
-
-        } catch (Exception e){
-
         }
 
         filterChain.doFilter(request,response);
