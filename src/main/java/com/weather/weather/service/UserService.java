@@ -31,13 +31,9 @@ public class UserService implements UserDetailsService {
         return userRepository.findAll();
     }
     public void deleteUser(String username) {
-        System.out.println("sosat1");
         Optional<User> userOptional = userRepository.findUserByUsername(username);
-        System.out.println("sosat2");
         if (userOptional.isPresent()) {
-            System.out.println("sosat3");
             userRepository.delete(userOptional.get());
-            System.out.println(username);
         } else {
             throw new IllegalArgumentException("User with username " + username + " not found");
         }

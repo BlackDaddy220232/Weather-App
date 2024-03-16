@@ -11,6 +11,7 @@ import java.util.Collections;
 @Setter
 @AllArgsConstructor
 @Builder
+@NoArgsConstructor
 public class User{
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -26,10 +27,5 @@ public class User{
     @PreRemove
     public void removeUser() {
         country.getUsers().removeAll(Collections.singleton(this));
-    }
-
-
-    public User() {
-
     }
 }

@@ -15,8 +15,7 @@ public class CountryController {
         this.countryService = countryService;
     }
     @GetMapping("/getCountryUsers")
-    public ResponseEntity<?> getCountryUsers(@RequestParam String countryName) {
-
+    public ResponseEntity<Object> getCountryUsers(@RequestParam String countryName) {
         try
         {
             return ResponseEntity.ok().body(countryService.getCountryUsers(countryName));
@@ -27,7 +26,7 @@ public class CountryController {
         }
     }
     @GetMapping("/getCountries")
-    public ResponseEntity<?> getCountries() {
+    public ResponseEntity<Object> getCountries() {
         try {
             return ResponseEntity.ok().body(countryService.getCountries());
         }
@@ -36,7 +35,7 @@ public class CountryController {
         }
     }
     @PatchMapping("/editCountryName")
-    public ResponseEntity<?> editCountryName(@RequestParam String countryName, String newCountryName){
+    public ResponseEntity<Object> editCountryName(@RequestParam String countryName, String newCountryName){
         try {
             countryService.editCountryName(countryName,newCountryName);
             return ResponseEntity.ok().body("Succes bitch");
@@ -46,7 +45,7 @@ public class CountryController {
         }
     }
     @DeleteMapping("/deleteCountry")
-    public ResponseEntity<?> deleteCountry(@RequestParam String countryName){
+    public ResponseEntity<Object> deleteCountry(@RequestParam String countryName){
         try {
             countryService.deleteCountry(countryName);
             return ResponseEntity.ok().body("Succes bitch");
