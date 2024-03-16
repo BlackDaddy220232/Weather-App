@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Sign In</title>
+</head>
+<body>
+<h1>Sign In</h1>
+<form id="signin-form">
+    <label for="username">Username:</label>
+    <input type="text" id="username" name="username" required><br><br>
+
+    <label for="password">Password:</label>
+    <input type="password" id="password" name="password" required><br><br>
+
+    <button type="submit">Sign In</button>
+</form>
+
+<script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+<script>
+    const signinForm = document.getElementById('signin-form');
+
+    signinForm.addEventListener('submit', (event) => {
+        event.preventDefault();
+
+        const username = document.getElementById('username').value;
+        const password = document.getElementById('password').value;
+
+        axios.post('/auth/signin', { username, password })
+            .then(response => {
+                const token = response.data;  // Полученный токен
+                // Сохраните токен в локальном хранилище (localStorage или sessionStorage)
+                localStorage.setItem('token', token);
+
+                // Используйте сохраненный токен для отправки запроса на страницу
+                axios.get('/api/v1/weather?word=Moscow', { headers: { Authorization: `Bearer ${token}` } })
+                    .then(weatherResponse => {
+                        const weatherData = weatherResponse.data; // Данные о погоде
+                        // Отобразить данные о погоде на странице
+                        const weatherDataElement = document.createElement('pre');
+                        weatherDataElement.textContent = JSON.stringify(weatherData, null, 2);
+                        document.body.appendChild(weatherDataElement);
+                    })
+                    .catch(error => {
+                        console.error(error);
+                        alert('Failed to fetch weather data. Please try again.');
+                    });
+            })
+            .catch(error => {
+                console.error(error);
+                alert('Sign In failed. Please try again.');
+            });
+    });
+</script>
+</body>
+</html>

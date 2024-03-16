@@ -80,8 +80,8 @@ public class SecurityConfigurator {
                 )
                 .authorizeHttpRequests(authorize -> authorize
                         .requestMatchers("/auth/**").permitAll()
-                        .requestMatchers("/api/**").fullyAuthenticated()
-                        .anyRequest().permitAll()
+                        .requestMatchers("/countries/**").hasRole("ADMIN")
+                        .anyRequest().hasAnyRole("ADMIN","USER")
                 )
                 .addFilterBefore(tokenFilter, UsernamePasswordAuthenticationFilter.class);
         return http.build();

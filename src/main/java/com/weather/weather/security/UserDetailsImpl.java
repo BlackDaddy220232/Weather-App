@@ -1,8 +1,10 @@
 package com.weather.weather.security;
 
+import com.weather.weather.entity.User;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.AuthorityUtils;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.Collection;
@@ -12,15 +14,17 @@ public class UserDetailsImpl implements UserDetails {
     private Long id;
     private String password;
     private String username;
+    private String role;
     public static UserDetailsImpl build(User user){
         return new UserDetailsImpl(
                 user.getId(),
                 user.getPassword(),
-                user.getUsername());
+                user.getUsername(),
+                user.getRole());
     }
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return null;
+        return AuthorityUtils.createAuthorityList(getRole());
     }
 
     @Override
