@@ -7,10 +7,12 @@ import com.weather.weather.model.entity.User;
 import com.weather.weather.security.JwtCore;
 import com.weather.weather.security.UserDetailsImpl;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.HashSet;
 import java.util.List;
@@ -97,5 +99,14 @@ public class UserService implements UserDetailsService {
                 cityRepository.delete(city);
             }
         }
+    }
+    public String getTokenFromRequest(String authorizationHeader){
+        String token;
+        if (authorizationHeader != null && authorizationHeader.startsWith("Bearer ")) {
+            token = authorizationHeader.substring(7);
+        } else {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
+        }
+        return token;
     }
 }

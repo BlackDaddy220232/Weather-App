@@ -32,36 +32,20 @@ public class UserController {
             @RequestParam String city,
             @RequestHeader("Authorization") String authorizationHeader) {
 
-        String token;
-        if (authorizationHeader != null && authorizationHeader.startsWith("Bearer ")) {
-            token = authorizationHeader.substring(7);
-        } else {
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-        }
-
+        String token = userService.getTokenFromRequest(authorizationHeader);
         userService.addCityToUser(city, token);
         return ResponseEntity.ok("Player was successfully added");
     }
     @GetMapping("/getAllCities")
     public ResponseEntity<Set<City>> getAllPlayersByUserName(@RequestHeader("Authorization") String authorizationHeader) {
-        String token;
-        if (authorizationHeader != null && authorizationHeader.startsWith("Bearer ")) {
-            token = authorizationHeader.substring(7);
-        } else {
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-        }
+        String token = userService.getTokenFromRequest(authorizationHeader);
         return ResponseEntity.ok(userService.getSavedCitiesByToken(token));
     }
     @DeleteMapping("/deleteCity")
     public ResponseEntity<String> deleteCity(
             @RequestParam String city,
             @RequestHeader("Authorization") String authorizationHeader) {
-        String token;
-        if (authorizationHeader != null && authorizationHeader.startsWith("Bearer ")) {
-            token = authorizationHeader.substring(7);
-        } else {
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-        }
+        String token = userService.getTokenFromRequest(authorizationHeader);
         userService.deleteCity(token,city);
         return ResponseEntity.ok("City was successfully delete");
     }
