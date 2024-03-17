@@ -1,9 +1,11 @@
-package com.weather.weather.entity;
+package com.weather.weather.model.entity;
 
 import jakarta.persistence.*;
 import lombok.*;
 
 import java.util.Collections;
+import java.util.HashSet;
+import java.util.Set;
 
 @Entity
 @Table(name = "users")
@@ -28,4 +30,12 @@ public class User{
     public void removeUser() {
         country.getUsers().removeAll(Collections.singleton(this));
     }
+    @ManyToMany(fetch = FetchType.EAGER)
+    @JoinTable(
+            name = "saved_city_mapping",
+            joinColumns = @JoinColumn(name = "user_id"),
+            inverseJoinColumns = @JoinColumn(name = "city_id")
+    )
+    private Set<City> savedCities = new HashSet<>();
+
 }

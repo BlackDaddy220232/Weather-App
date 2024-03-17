@@ -2,9 +2,12 @@ package com.weather.weather.controller;
 
 import com.weather.weather.dao.CountryRepository;
 import com.weather.weather.dao.UserRepository;
-import com.weather.weather.entity.Country;
+import com.weather.weather.model.dto.PasswordRequest;
+import com.weather.weather.model.dto.SignInRequest;
+import com.weather.weather.model.dto.SignUpRequest;
+import com.weather.weather.model.entity.Country;
 import com.weather.weather.security.JwtCore;
-import com.weather.weather.entity.User;
+import com.weather.weather.model.entity.User;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;

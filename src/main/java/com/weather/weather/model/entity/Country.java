@@ -1,4 +1,4 @@
-package com.weather.weather.entity;
+package com.weather.weather.model.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;

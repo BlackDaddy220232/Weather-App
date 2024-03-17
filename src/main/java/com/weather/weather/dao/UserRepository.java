@@ -1,6 +1,6 @@
 package com.weather.weather.dao;
 
-import com.weather.weather.entity.User;
+import com.weather.weather.model.entity.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

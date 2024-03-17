@@ -1,6 +1,6 @@
 package com.weather.weather.security;
 
-import com.weather.weather.entity.User;
+import com.weather.weather.model.entity.User;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import org.springframework.security.core.GrantedAuthority;

@@ -1,4 +1,4 @@
-package com.weather.weather.controller;
+package com.weather.weather.model.dto;
 import lombok.Data;
 
 @Data

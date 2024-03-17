@@ -1,8 +1,8 @@
 package com.weather.weather.service;
 
 import com.weather.weather.dao.CountryRepository;
-import com.weather.weather.entity.Country;
-import com.weather.weather.entity.User;
+import com.weather.weather.model.entity.Country;
+import com.weather.weather.model.entity.User;
 import com.weather.weather.exception.CountryNotFoundException;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
