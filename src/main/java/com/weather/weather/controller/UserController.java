@@ -34,7 +34,7 @@ public class UserController {
 
         String token = userService.getTokenFromRequest(authorizationHeader);
         userService.addCityToUser(city, token);
-        return ResponseEntity.ok("Player was successfully added");
+        return ResponseEntity.ok("City was successfully added");
     }
     @GetMapping("/getAllCities")
     public ResponseEntity<Set<City>> getAllPlayersByUserName(@RequestHeader("Authorization") String authorizationHeader) {
@@ -47,6 +47,6 @@ public class UserController {
             @RequestHeader("Authorization") String authorizationHeader) {
         String token = userService.getTokenFromRequest(authorizationHeader);
         userService.deleteCity(token,city);
-        return ResponseEntity.ok("City was successfully delete");
+        return ResponseEntity.ok("City was successfully deleted");
     }
 }

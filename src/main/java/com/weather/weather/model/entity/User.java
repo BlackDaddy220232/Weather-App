@@ -30,7 +30,7 @@ public class User{
     public void removeUser() {
         country.getUsers().removeAll(Collections.singleton(this));
     }
-    @ManyToMany(fetch = FetchType.EAGER)
+    @ManyToMany(fetch = FetchType.EAGER,cascade = {CascadeType.DETACH, CascadeType.REFRESH, CascadeType.MERGE, CascadeType.PERSIST})
     @JoinTable(
             name = "saved_city_mapping",
             joinColumns = @JoinColumn(name = "user_id"),

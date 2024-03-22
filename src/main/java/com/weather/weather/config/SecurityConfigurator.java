@@ -71,7 +71,6 @@ public class SecurityConfigurator {
                             return configuration;
                         })
                 )
-                // Остальной код без изменений
                 .exceptionHandling(exceptions -> exceptions
                         .authenticationEntryPoint(new HttpStatusEntryPoint(HttpStatus.UNAUTHORIZED))
                 )
@@ -80,7 +79,7 @@ public class SecurityConfigurator {
                 )
                 .authorizeHttpRequests(authorize -> authorize
                         .requestMatchers("/auth/**").permitAll()
-                        .requestMatchers("/countries/**").hasRole("ADMIN")
+                        .requestMatchers("/countries/**","/users/deleteUser","/users/getAllUsers").hasRole("ADMIN")
                         .anyRequest().hasAnyRole("ADMIN","USER")
                 )
                 .addFilterBefore(tokenFilter, UsernamePasswordAuthenticationFilter.class);

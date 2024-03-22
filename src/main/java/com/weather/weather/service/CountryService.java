@@ -3,7 +3,6 @@ package com.weather.weather.service;
 import com.weather.weather.dao.CountryRepository;
 import com.weather.weather.model.entity.Country;
 import com.weather.weather.model.entity.User;
-import com.weather.weather.exception.CountryNotFoundException;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -19,11 +18,10 @@ public class CountryService {
         this.countryRepository = countryRepository;
     }
 
-    public List<User> getCountryUsers(String countryName) throws CountryNotFoundException
-    {
+    public List<User> getCountryUsers(String countryName) throws IllegalAccessException {
         if (countryRepository.findCountryByCountryName(countryName)==null)
         {
-            throw new CountryNotFoundException("Пользователь не найден");
+            throw new IllegalAccessException("Country doesn't exist");
         }
         Country country = countryRepository.findCountryByCountryName(countryName);
         return country.getUsers();
