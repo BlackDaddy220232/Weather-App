@@ -41,6 +41,10 @@ public class UserController {
         String token = userService.getTokenFromRequest(authorizationHeader);
         return ResponseEntity.ok(userService.getSavedCitiesByToken(token));
     }
+    @GetMapping("/getUserByUsername")
+    public ResponseEntity<User> getUserByUsername(@RequestParam String username){
+        return ResponseEntity.ok(userService.getUserByUsername(username));
+    }
     @DeleteMapping("/deleteCity")
     public ResponseEntity<String> deleteCity(
             @RequestParam String city,
@@ -48,5 +52,9 @@ public class UserController {
         String token = userService.getTokenFromRequest(authorizationHeader);
         userService.deleteCity(token,city);
         return ResponseEntity.ok("City was successfully deleted");
+    }
+    @GetMapping("/byCity")
+    public ResponseEntity<List<User>> getUsersByCity(@RequestParam String cityName) {
+        return ResponseEntity.ok().body(userService.findUsersByCity(cityName));
     }
 }
