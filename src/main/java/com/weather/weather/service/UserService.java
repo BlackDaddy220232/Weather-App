@@ -1,5 +1,6 @@
 package com.weather.weather.service;
 
+import com.weather.weather.component.UserCache;
 import com.weather.weather.dao.CityRepository;
 import com.weather.weather.dao.UserRepository;
 import com.weather.weather.model.entity.City;
@@ -25,12 +26,16 @@ import java.util.Set;
 public class UserService implements UserDetailsService {
     private CityRepository cityRepository;
     private UserRepository userRepository;
+    private UserCache userCache;
     private JwtCore jwtCore;
     @Autowired
     public void setJwtCore(JwtCore jwtCore) {
         this.jwtCore = jwtCore;
     }
-
+    @Autowired
+    public void setUserCache(UserCache userCache){
+        this.userCache=userCache;
+    }
     @Autowired
     public UserService(UserRepository userRepository) {
         this.userRepository = userRepository;
@@ -42,8 +47,10 @@ public class UserService implements UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        User user=userRepository.findUserByUsername(username).orElseThrow(()->new UsernameNotFoundException(
-                String.format("User '%s' not found",username)));
+        User user=userRepository.findUserByUsername(username).orElseThrow(()->{
+                String.format("User '%s' not found",username);
+                throw new UsernameNotFoundException("User Not Found");
+        });
         return UserDetailsImpl.build(user);
     }
     public List<User> getAllUsers() {
@@ -52,9 +59,9 @@ public class UserService implements UserDetailsService {
     public void deleteUser(String username) {
         Optional<User> userOptional = userRepository.findUserByUsername(username);
         if (userOptional.isPresent()) {
-            userRepository.delete(userOptional.get());
+            deleteUser(userOptional.get());
         } else {
-            throw new IllegalArgumentException("User with username " + username + " not found");
+            throw new UsernameNotFoundException("User Not Found");
         }
     }
     public void addCityToUser(String cityName,String token) {
@@ -73,7 +80,8 @@ public class UserService implements UserDetailsService {
             }
             savedCities.add(city);
             user.setSavedCities(savedCities);
-            userRepository.save(user);
+
+            saveUser(user);
         }
     }
     public Set<City> getSavedCitiesByToken(String token) {
@@ -111,4 +119,28 @@ public class UserService implements UserDetailsService {
         }
         return token;
     }
+    public User getUserByUsername(String username){
+        User user=(User)userCache.getFromCache(username);
+        if (user!=null){
+            return user;
+        }
+        user = userRepository.findUserByUsername(username).orElseThrow(()->new UsernameNotFoundException(String.format(
+                "User %s not found",username))
+        );
+        userCache.addToCache(username,user);
+        return user;
+    }
+    public void  saveUser(User user){
+        userRepository.save(user);
+        userCache.addToCache(user.getUsername(),user);
+    }
+
+    public void deleteUser(User user) {
+        userRepository.delete(user);
+        userCache.removeFromCache(user.getUsername());
+    }
+    public List<User> findUsersByCity(String cityName){
+        return userRepository.findUsersByCity(cityName);
+    }
+
 }
