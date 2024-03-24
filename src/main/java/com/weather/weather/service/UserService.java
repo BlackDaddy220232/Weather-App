@@ -28,6 +28,7 @@ public class UserService implements UserDetailsService {
     private UserRepository userRepository;
     private UserCache userCache;
     private JwtCore jwtCore;
+    private static final String USER_NOT_FOUND_MESSAGE="User not found";
     @Autowired
     public void setJwtCore(JwtCore jwtCore) {
         this.jwtCore = jwtCore;
@@ -60,7 +61,7 @@ public class UserService implements UserDetailsService {
         if (userOptional.isPresent()) {
             deleteUser(userOptional.get());
         } else {
-            throw new UsernameNotFoundException("User Not Found");
+            throw new UsernameNotFoundException(String.format(USER_NOT_FOUND_MESSAGE,username));
         }
     }
     public void addCityToUser(String cityName,String token) {
