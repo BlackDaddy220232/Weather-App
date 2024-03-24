@@ -10,7 +10,6 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.context.request.WebRequest;
-import org.springframework.web.server.ResponseStatusException;
 import org.springframework.web.servlet.NoHandlerFoundException;
 
 @RestControllerAdvice
@@ -45,8 +44,8 @@ public class ControllerExceptionHandler {
         logger.error("Error 401");
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Error 401: Unauthorized");
     }
-    @ExceptionHandler({ResponseStatusException.class})
-    public ResponseEntity<Object> usernameNotFoundException(UsernameNotFoundException ex,WebRequest request){
+    @ExceptionHandler({UsernameNotFoundException.class})
+    public ResponseEntity<Object> HandleusernameNotFoundException(UsernameNotFoundException ex,WebRequest request){
         logger.error("Error 404: User not found");
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Error 404: User Not Found");
     }
