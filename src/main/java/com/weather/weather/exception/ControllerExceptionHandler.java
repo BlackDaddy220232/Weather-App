@@ -45,7 +45,7 @@ public class ControllerExceptionHandler {
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Error 401: Unauthorized");
     }
     @ExceptionHandler({UsernameNotFoundException.class})
-    public ResponseEntity<Object> HandleusernameNotFoundException(UsernameNotFoundException ex,WebRequest request){
+    public ResponseEntity<Object> handleusernameNotFoundException(UsernameNotFoundException ex,WebRequest request){
         logger.error("Error 404: User not found");
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Error 404: User Not Found");
     }
