@@ -58,11 +58,8 @@ public class UserService implements UserDetailsService {
     }
     public void deleteUser(String username) {
         Optional<User> userOptional = userRepository.findUserByUsername(username);
-        if (userOptional.isPresent()) {
-            deleteUser(userOptional.get());
-        } else {
-            throw new UsernameNotFoundException(String.format(USER_NOT_FOUND_MESSAGE,username));
-        }
+        User user = userOptional.orElseThrow(() -> new UsernameNotFoundException(String.format(USER_NOT_FOUND_MESSAGE, username)));
+        deleteUser(user);
     }
     public void addCityToUser(String cityName,String token) {
         String username = jwtCore.getNameFromJwt(token);
