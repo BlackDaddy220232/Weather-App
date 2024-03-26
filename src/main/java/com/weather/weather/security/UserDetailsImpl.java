@@ -8,6 +8,7 @@ import org.springframework.security.core.authority.AuthorityUtils;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.Collection;
+
 @Data
 @AllArgsConstructor
 public class UserDetailsImpl implements UserDetails {
@@ -15,13 +16,15 @@ public class UserDetailsImpl implements UserDetails {
     private String password;
     private String username;
     private String role;
-    public static UserDetailsImpl build(User user){
+
+    public static UserDetailsImpl build(User user) {
         return new UserDetailsImpl(
                 user.getId(),
                 user.getPassword(),
                 user.getUsername(),
                 user.getRole());
     }
+
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return AuthorityUtils.createAuthorityList(getRole());

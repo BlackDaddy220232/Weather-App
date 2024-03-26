@@ -43,7 +43,7 @@ public class SecurityConfigurator {
     }
 
     @Bean
-    public PasswordEncoder passwordEncoder(){
+    public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
 
@@ -51,9 +51,10 @@ public class SecurityConfigurator {
     public AuthenticationManager authenticationManager(AuthenticationConfiguration authenticationConfiguration) throws Exception {
         return authenticationConfiguration.getAuthenticationManager();
     }
+
     @Bean
     @Primary
-    public AuthenticationManagerBuilder configureAuthenticationManagerBuilder(AuthenticationManagerBuilder  authenticationManagerBuilder) throws Exception {
+    public AuthenticationManagerBuilder configureAuthenticationManagerBuilder(AuthenticationManagerBuilder authenticationManagerBuilder) throws Exception {
         authenticationManagerBuilder.userDetailsService(userService).passwordEncoder(passwordEncoder());
         return authenticationManagerBuilder;
     }
@@ -79,8 +80,8 @@ public class SecurityConfigurator {
                 )
                 .authorizeHttpRequests(authorize -> authorize
                         .requestMatchers("/auth/**").permitAll()
-                        .requestMatchers("/countries/**","/users/deleteUser","/users/getAllUsers").hasRole("ADMIN")
-                        .anyRequest().hasAnyRole("ADMIN","USER")
+                        .requestMatchers("/countries/**", "/users/deleteUser", "/users/getAllUsers").hasRole("ADMIN")
+                        .anyRequest().hasAnyRole("ADMIN", "USER")
                 )
                 .addFilterBefore(tokenFilter, UsernamePasswordAuthenticationFilter.class);
         return http.build();

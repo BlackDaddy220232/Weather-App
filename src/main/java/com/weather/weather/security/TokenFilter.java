@@ -13,8 +13,6 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 
-
-
 import java.io.IOException;
 
 @Component
@@ -24,8 +22,9 @@ public class TokenFilter extends OncePerRequestFilter {
 
     @Autowired
     public void setUserDetailsService(UserDetailsService userDetailsService) {
-        this.userDetailsService=userDetailsService;
+        this.userDetailsService = userDetailsService;
     }
+
     @Autowired
     public void setJwtCore(JwtCore jwtCore) {
         this.jwtCore = jwtCore;
@@ -37,7 +36,7 @@ public class TokenFilter extends OncePerRequestFilter {
         String username = null;
         UserDetails userDetails = null;
         UsernamePasswordAuthenticationToken auth = null;
-        if (!request.getRequestURI().equals("/auth/signin")&&!(request.getRequestURI().equals("/auth/signup"))) {
+        if (!request.getRequestURI().equals("/auth/signin") && !(request.getRequestURI().equals("/auth/signup"))) {
             try {
                 String headerAuth = request.getHeader("Authorization");
                 if (headerAuth != null && headerAuth.startsWith("Bearer ")) {
@@ -58,6 +57,6 @@ public class TokenFilter extends OncePerRequestFilter {
             }
         }
 
-        filterChain.doFilter(request,response);
+        filterChain.doFilter(request, response);
     }
 }

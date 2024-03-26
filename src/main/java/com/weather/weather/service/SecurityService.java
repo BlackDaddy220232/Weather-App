@@ -31,14 +31,17 @@ public class SecurityService {
     private JwtCore jwtCore;
 
     private CountryRepository countryRepository;
+
     @Autowired
     public void setUserRepository(UserRepository userRepository) {
         this.userRepository = userRepository;
     }
+
     @Autowired
     public void setPasswordEncoder(PasswordEncoder passwordEncoder) {
         this.passwordEncoder = passwordEncoder;
     }
+
     @Autowired
     public void setAuthenticationManager(AuthenticationManager authenticationManager) {
         this.authenticationManager = authenticationManager;
@@ -50,11 +53,11 @@ public class SecurityService {
     }
 
     @Autowired
-    public void setCountyRepository(CountryRepository countyRepository){
-        this.countryRepository=countyRepository;
+    public void setCountyRepository(CountryRepository countyRepository) {
+        this.countryRepository = countyRepository;
     }
 
-    public String register(SignUpRequest signUpRequest){
+    public String register(SignUpRequest signUpRequest) {
         if (userRepository.existsUserByUsername(signUpRequest.getUsername()).booleanValue()) {
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED);
         }
@@ -76,7 +79,7 @@ public class SecurityService {
         return jwtCore.generateToken(authentication);
     }
 
-    public String login(SignInRequest signInRequest){
+    public String login(SignInRequest signInRequest) {
         Authentication authentication = null;
         try {
             authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(signInRequest.getUsername(), signInRequest.getPassword()));
@@ -84,19 +87,19 @@ public class SecurityService {
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED);
         }
         SecurityContextHolder.getContext().setAuthentication(authentication);
-        return(jwtCore.generateToken(authentication));
+        return (jwtCore.generateToken(authentication));
     }
-    public void changePas(PasswordRequest passwordRequest, HttpServletRequest request){
+
+    public void changePas(PasswordRequest passwordRequest, HttpServletRequest request) {
         String authorizationHeader = request.getHeader("Authorization");
         String token;
         if (authorizationHeader != null && authorizationHeader.startsWith("Bearer ")) {
             token = authorizationHeader.substring(7);
-        }
-        else
+        } else
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
         String username = jwtCore.getNameFromJwt(token);
-        User user=userRepository.findUserByUsername(username).orElseThrow(()->new UsernameNotFoundException(
-                String.format("User '%s' not found",username)));
+        User user = userRepository.findUserByUsername(username).orElseThrow(() -> new UsernameNotFoundException(
+                String.format("User '%s' not found", username)));
         user.setPassword(passwordEncoder.encode(passwordRequest.getPassword()));
         userRepository.save(user);
     }

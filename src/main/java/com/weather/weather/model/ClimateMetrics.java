@@ -15,8 +15,7 @@ public class ClimateMetrics {
     private int pressure;
     @JsonProperty("humidity")
     private int humidity;
-    public void metricConvert()
-    {
-        temperature-=273.15;
+    public void metricConvert() {
+        temperature -= 273.15;
     }
 }

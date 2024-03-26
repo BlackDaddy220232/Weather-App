@@ -26,8 +26,12 @@ public class UserCache {
         return hashMap.get(key);
     }
 
-    public void removeFromCache(String key) { hashMap.remove(key); }
+    public void removeFromCache(String key) {
+        hashMap.remove(key);
+    }
 
-    public void clearCache() { hashMap.clear(); }
+    public void clearCache() {
+        hashMap.clear();
+    }
 
 }
