@@ -14,13 +14,17 @@ import java.util.List;
 @Builder
 @NoArgsConstructor
 public class Country {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
-    @Column(name = "country")
-    private String countryName;
+  @Id
+  @GeneratedValue(strategy = GenerationType.IDENTITY)
+  private Long id;
 
-    @OneToMany(mappedBy = "country",fetch = FetchType.EAGER,cascade = {CascadeType.DETACH, CascadeType.REFRESH, CascadeType.MERGE, CascadeType.PERSIST})
-    @JsonIgnore
-    private List<User> users;
+  @Column(name = "country")
+  private String countryName;
+
+  @OneToMany(
+      mappedBy = "country",
+      fetch = FetchType.EAGER,
+      cascade = {CascadeType.DETACH, CascadeType.REFRESH, CascadeType.MERGE, CascadeType.PERSIST})
+  @JsonIgnore
+  private List<User> users;
 }

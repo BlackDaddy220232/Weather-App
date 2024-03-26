@@ -11,29 +11,31 @@ import java.util.ArrayList;
 @AllArgsConstructor
 @NoArgsConstructor
 public class WeatherForecast {
-    private ArrayList<Weather> weather;
-    private Wind wind;
-    private Coordinates coordinates;
-    private ClimateMetrics main;
-    private int visibility;
-    private WeatherIconMap weatherIconMap = new WeatherIconMap();
-    @JsonProperty("sys")
-    private Time time = new Time();
-    private int timezone;
+  private ArrayList<Weather> weather;
+  private Wind wind;
+  private Coordinates coordinates;
+  private ClimateMetrics main;
+  private int visibility;
+  private WeatherIconMap weatherIconMap = new WeatherIconMap();
 
-    public void convert() {
-        main.metricConvert();
-    }
+  @JsonProperty("sys")
+  private Time time = new Time();
 
-    public String getFromMap(String icon) {
-        return weatherIconMap.getIconForWeather(icon);
-    }
+  private int timezone;
 
-    public String getWeatherIcon() {
-        return weather.get(0).getIcon();
-    }
+  public void convert() {
+    main.metricConvert();
+  }
 
-    public void convertTime() {
-        time.timeConvert(timezone);
-    }
+  public String getFromMap(String icon) {
+    return weatherIconMap.getIconForWeather(icon);
+  }
+
+  public String getWeatherIcon() {
+    return weather.get(0).getIcon();
+  }
+
+  public void convertTime() {
+    time.timeConvert(timezone);
+  }
 }

@@ -7,8 +7,9 @@ import lombok.Data;
 @Data
 @Builder
 public class Coordinates {
-    @JsonProperty("lon")
-    private int lon;
-    @JsonProperty("lat")
-    private int lat;
+  @JsonProperty("lon")
+  private int lon;
+
+  @JsonProperty("lat")
+  private int lat;
 }

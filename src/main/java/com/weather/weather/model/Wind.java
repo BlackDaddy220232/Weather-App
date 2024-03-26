@@ -7,8 +7,9 @@ import lombok.Data;
 @Data
 @Builder
 public class Wind {
-    @JsonProperty("speed")
-    private double speed;
-    @JsonProperty("deg")
-    private int degree;
+  @JsonProperty("speed")
+  private double speed;
+
+  @JsonProperty("deg")
+  private int degree;
 }

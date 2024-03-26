@@ -14,19 +14,21 @@ import java.time.format.DateTimeFormatter;
 @NoArgsConstructor
 @AllArgsConstructor
 public class Time {
-    @JsonProperty("sunrise")
-    private long sunriseTime;
-    @JsonProperty("sunset")
-    private long sunsetTime;
-    private String convertedSunsetTime;
-    private String convertedSunriseTime;
+  @JsonProperty("sunrise")
+  private long sunriseTime;
 
-    public void timeConvert(int timezone) {
-        Instant instantSunrise = Instant.ofEpochSecond(sunriseTime + timezone);
-        LocalDateTime utcSunriseTime = LocalDateTime.ofInstant(instantSunrise, ZoneId.of("UTC"));
-        convertedSunriseTime = utcSunriseTime.format(DateTimeFormatter.ofPattern("HH:mm"));
-        Instant instantSunset = Instant.ofEpochSecond(sunsetTime + timezone);
-        LocalDateTime utcSunsetTime = LocalDateTime.ofInstant(instantSunset, ZoneId.of("UTC"));
-        convertedSunsetTime = utcSunsetTime.format(DateTimeFormatter.ofPattern("HH:mm"));
-    }
+  @JsonProperty("sunset")
+  private long sunsetTime;
+
+  private String convertedSunsetTime;
+  private String convertedSunriseTime;
+
+  public void timeConvert(int timezone) {
+    Instant instantSunrise = Instant.ofEpochSecond(sunriseTime + timezone);
+    LocalDateTime utcSunriseTime = LocalDateTime.ofInstant(instantSunrise, ZoneId.of("UTC"));
+    convertedSunriseTime = utcSunriseTime.format(DateTimeFormatter.ofPattern("HH:mm"));
+    Instant instantSunset = Instant.ofEpochSecond(sunsetTime + timezone);
+    LocalDateTime utcSunsetTime = LocalDateTime.ofInstant(instantSunset, ZoneId.of("UTC"));
+    convertedSunsetTime = utcSunsetTime.format(DateTimeFormatter.ofPattern("HH:mm"));
+  }
 }
