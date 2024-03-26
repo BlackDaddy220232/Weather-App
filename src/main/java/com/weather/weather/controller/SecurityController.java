@@ -14,16 +14,17 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/auth")
 public class SecurityController {
     private SecurityService securityService;
+
     @Autowired
     public void setSecurityService(SecurityService securityService) {
         this.securityService = securityService;
     }
+
     @PostMapping("/signup")
     ResponseEntity<String> signup(@RequestBody SignUpRequest signUpRequest) {
         try {
             return ResponseEntity.ok(securityService.register(signUpRequest));
-        }
-        catch (Exception e){
+        } catch (Exception e) {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
@@ -32,10 +33,11 @@ public class SecurityController {
     ResponseEntity<String> signin(@RequestBody SignInRequest signInRequest) {
         return ResponseEntity.ok(securityService.login(signInRequest));
     }
+
     @PatchMapping("/editPassword")
     public ResponseEntity<String> editPassword(@RequestBody PasswordRequest passwordRequest, HttpServletRequest request) {
-        securityService.changePas(passwordRequest,request);
-        return  ResponseEntity.ok("Password was successfully updated");
+        securityService.changePas(passwordRequest, request);
+        return ResponseEntity.ok("Password was successfully updated");
     }
 
 }

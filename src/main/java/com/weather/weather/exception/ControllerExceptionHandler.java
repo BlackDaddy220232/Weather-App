@@ -39,13 +39,15 @@ public class ControllerExceptionHandler {
         logger.error("Error 500");
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error 500: Internal server error");
     }
+
     @ExceptionHandler({HttpClientErrorException.Unauthorized.class})
-    public ResponseEntity<Object> handleUnauthorizedException(HttpClientErrorException.Unauthorized ex,WebRequest request){
+    public ResponseEntity<Object> handleUnauthorizedException(HttpClientErrorException.Unauthorized ex, WebRequest request) {
         logger.error("Error 401");
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Error 401: Unauthorized");
     }
+
     @ExceptionHandler({UsernameNotFoundException.class})
-    public ResponseEntity<Object> handleusernameNotFoundException(UsernameNotFoundException ex,WebRequest request){
+    public ResponseEntity<Object> handleusernameNotFoundException(UsernameNotFoundException ex, WebRequest request) {
         logger.error("Error 404: User not found");
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Error 404: User Not Found");
     }

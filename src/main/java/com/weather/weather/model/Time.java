@@ -20,12 +20,12 @@ public class Time {
     private long sunsetTime;
     private String convertedSunsetTime;
     private String convertedSunriseTime;
-    public void timeConvert(int timezone)
-    {
-        Instant instantSunrise = Instant.ofEpochSecond(sunriseTime+ timezone);
+
+    public void timeConvert(int timezone) {
+        Instant instantSunrise = Instant.ofEpochSecond(sunriseTime + timezone);
         LocalDateTime utcSunriseTime = LocalDateTime.ofInstant(instantSunrise, ZoneId.of("UTC"));
-        convertedSunriseTime= utcSunriseTime.format(DateTimeFormatter.ofPattern("HH:mm"));
-        Instant instantSunset = Instant.ofEpochSecond(sunsetTime+ timezone);
+        convertedSunriseTime = utcSunriseTime.format(DateTimeFormatter.ofPattern("HH:mm"));
+        Instant instantSunset = Instant.ofEpochSecond(sunsetTime + timezone);
         LocalDateTime utcSunsetTime = LocalDateTime.ofInstant(instantSunset, ZoneId.of("UTC"));
         convertedSunsetTime = utcSunsetTime.format(DateTimeFormatter.ofPattern("HH:mm"));
     }

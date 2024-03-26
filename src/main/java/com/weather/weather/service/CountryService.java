@@ -13,28 +13,31 @@ import java.util.List;
 @Transactional
 public class CountryService {
     private CountryRepository countryRepository;
+
     @Autowired
     public void setCountryRepository(CountryRepository countryRepository) {
         this.countryRepository = countryRepository;
     }
 
     public List<User> getCountryUsers(String countryName) throws IllegalAccessException {
-        if (countryRepository.findCountryByCountryName(countryName)==null)
-        {
+        if (countryRepository.findCountryByCountryName(countryName) == null) {
             throw new IllegalAccessException("Country doesn't exist");
         }
         Country country = countryRepository.findCountryByCountryName(countryName);
         return country.getUsers();
     }
-    public List<Country> getCountries(){
+
+    public List<Country> getCountries() {
         return countryRepository.findAll();
     }
-    public void editCountryName(String countryName,String newCountryName) {
-        Country country= countryRepository.findCountryByCountryName(countryName);
+
+    public void editCountryName(String countryName, String newCountryName) {
+        Country country = countryRepository.findCountryByCountryName(countryName);
         country.setCountryName(newCountryName);
     }
-    public void deleteCountry(String countyName){
-        Country country= countryRepository.findCountryByCountryName(countyName);
+
+    public void deleteCountry(String countyName) {
+        Country country = countryRepository.findCountryByCountryName(countyName);
         countryRepository.delete(country);
     }
 

@@ -1,4 +1,5 @@
 package com.weather.weather.controller;
+
 import com.weather.weather.model.WeatherForecast;
 import com.weather.weather.service.WeatherService;
 import org.springframework.http.HttpStatus;
@@ -24,13 +25,13 @@ public class WeatherController {
     }
 
     @GetMapping(value = "/weather")
-    public String getWeather(@RequestParam String word, Model model){
-            WeatherForecast weatherForecast = weatherService.getWeatherByCity(word);
-            weatherForecast.convert();
-            icon = weatherForecast.getFromMap(weatherForecast.getWeatherIcon());
-            weatherForecast.convertTime();
-            model.addAttribute("weatherForecast", weatherForecast);
-            model.addAttribute("icon", icon);
-            return "index";
+    public String getWeather(@RequestParam String word, Model model) {
+        WeatherForecast weatherForecast = weatherService.getWeatherByCity(word);
+        weatherForecast.convert();
+        icon = weatherForecast.getFromMap(weatherForecast.getWeatherIcon());
+        weatherForecast.convertTime();
+        model.addAttribute("weatherForecast", weatherForecast);
+        model.addAttribute("icon", icon);
+        return "index";
     }
 }

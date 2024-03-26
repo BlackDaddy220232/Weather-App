@@ -13,6 +13,7 @@ public class WeatherService {
     @Value("${api.url}")
     private String apiUrl;
     private final RestTemplate restTemplate = new RestTemplate();
+
     public WeatherForecast getWeatherByCity(String city) {
         String url = apiUrl + "?q=" + city + "&appid=" + apiKey;
         return restTemplate.getForObject(url, WeatherForecast.class);
