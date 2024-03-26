@@ -14,41 +14,48 @@ import org.springframework.web.servlet.NoHandlerFoundException;
 
 @RestControllerAdvice
 public class ControllerExceptionHandler {
-    private static final Logger logger = LoggerFactory.getLogger(ControllerExceptionHandler.class);
+  private static final Logger logger = LoggerFactory.getLogger(ControllerExceptionHandler.class);
 
-    @ExceptionHandler({HttpClientErrorException.class})
-    public ResponseEntity<Object> handleIllegalArgumentException(HttpClientErrorException ex, WebRequest request) {
-        logger.error("Error 400");
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Error 400: Bad request");
-    }
+  @ExceptionHandler({HttpClientErrorException.class})
+  public ResponseEntity<Object> handleIllegalArgumentException(
+      HttpClientErrorException ex, WebRequest request) {
+    logger.error("Error 400");
+    return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Error 400: Bad request");
+  }
 
-    @ExceptionHandler({NoHandlerFoundException.class})
-    public ResponseEntity<Object> handleNoResourceFoundException(NoHandlerFoundException ex, WebRequest request) {
-        logger.error("Error 404");
-        return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Error 404: Not Found");
-    }
+  @ExceptionHandler({NoHandlerFoundException.class})
+  public ResponseEntity<Object> handleNoResourceFoundException(
+      NoHandlerFoundException ex, WebRequest request) {
+    logger.error("Error 404");
+    return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Error 404: Not Found");
+  }
 
-    @ExceptionHandler({HttpRequestMethodNotSupportedException.class})
-    public ResponseEntity<Object> handleMethodNotSupportedException(HttpRequestMethodNotSupportedException ex, WebRequest request) {
-        logger.error("Error 405: Method not supported");
-        return ResponseEntity.status(HttpStatus.METHOD_NOT_ALLOWED).body("Error 405: Method not supported");
-    }
+  @ExceptionHandler({HttpRequestMethodNotSupportedException.class})
+  public ResponseEntity<Object> handleMethodNotSupportedException(
+      HttpRequestMethodNotSupportedException ex, WebRequest request) {
+    logger.error("Error 405: Method not supported");
+    return ResponseEntity.status(HttpStatus.METHOD_NOT_ALLOWED)
+        .body("Error 405: Method not supported");
+  }
 
-    @ExceptionHandler({RuntimeException.class})
-    public ResponseEntity<Object> handleAllExceptions(RuntimeException ex, WebRequest request) {
-        logger.error("Error 500");
-        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error 500: Internal server error");
-    }
+  @ExceptionHandler({RuntimeException.class})
+  public ResponseEntity<Object> handleAllExceptions(RuntimeException ex, WebRequest request) {
+    logger.error("Error 500");
+    return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+        .body("Error 500: Internal server error");
+  }
 
-    @ExceptionHandler({HttpClientErrorException.Unauthorized.class})
-    public ResponseEntity<Object> handleUnauthorizedException(HttpClientErrorException.Unauthorized ex, WebRequest request) {
-        logger.error("Error 401");
-        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Error 401: Unauthorized");
-    }
+  @ExceptionHandler({HttpClientErrorException.Unauthorized.class})
+  public ResponseEntity<Object> handleUnauthorizedException(
+      HttpClientErrorException.Unauthorized ex, WebRequest request) {
+    logger.error("Error 401");
+    return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Error 401: Unauthorized");
+  }
 
-    @ExceptionHandler({UsernameNotFoundException.class})
-    public ResponseEntity<Object> handleusernameNotFoundException(UsernameNotFoundException ex, WebRequest request) {
-        logger.error("Error 404: User not found");
-        return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Error 404: User Not Found");
-    }
+  @ExceptionHandler({UsernameNotFoundException.class})
+  public ResponseEntity<Object> handleusernameNotFoundException(
+      UsernameNotFoundException ex, WebRequest request) {
+    logger.error("Error 404: User not found");
+    return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Error 404: User Not Found");
+  }
 }

@@ -14,56 +14,55 @@ import java.util.Set;
 @RestController
 @RequestMapping("/users")
 public class UserController {
-    private final UserService userService;
+  private final UserService userService;
 
-    @Autowired
-    public UserController(UserService userService) {
-        this.userService = userService;
-    }
+  @Autowired
+  public UserController(UserService userService) {
+    this.userService = userService;
+  }
 
-    @GetMapping("/getAllUsers")
-    public ResponseEntity<List<User>> getAllUsers() {
-        return new ResponseEntity<>(userService.getAllUsers(), HttpStatus.OK);
-    }
+  @GetMapping("/getAllUsers")
+  public ResponseEntity<List<User>> getAllUsers() {
+    return new ResponseEntity<>(userService.getAllUsers(), HttpStatus.OK);
+  }
 
-    @DeleteMapping("/deleteUser")
-    public ResponseEntity<String> deleteUser(@RequestParam String username) {
-        userService.deleteUser(username);
-        return ResponseEntity.ok("User was successfully deleted");
-    }
+  @DeleteMapping("/deleteUser")
+  public ResponseEntity<String> deleteUser(@RequestParam String username) {
+    userService.deleteUser(username);
+    return ResponseEntity.ok("User was successfully deleted");
+  }
 
-    @PostMapping("/addCity")
-    public ResponseEntity<String> addPlayerToUser(
-            @RequestParam String city,
-            @RequestHeader("Authorization") String authorizationHeader) {
+  @PostMapping("/addCity")
+  public ResponseEntity<String> addPlayerToUser(
+      @RequestParam String city, @RequestHeader("Authorization") String authorizationHeader) {
 
-        String token = userService.getTokenFromRequest(authorizationHeader);
-        userService.addCityToUser(city, token);
-        return ResponseEntity.ok("City was successfully added");
-    }
+    String token = userService.getTokenFromRequest(authorizationHeader);
+    userService.addCityToUser(city, token);
+    return ResponseEntity.ok("City was successfully added");
+  }
 
-    @GetMapping("/getAllCities")
-    public ResponseEntity<Set<City>> getAllPlayersByUserName(@RequestHeader("Authorization") String authorizationHeader) {
-        String token = userService.getTokenFromRequest(authorizationHeader);
-        return ResponseEntity.ok(userService.getSavedCitiesByToken(token));
-    }
+  @GetMapping("/getAllCities")
+  public ResponseEntity<Set<City>> getAllPlayersByUserName(
+      @RequestHeader("Authorization") String authorizationHeader) {
+    String token = userService.getTokenFromRequest(authorizationHeader);
+    return ResponseEntity.ok(userService.getSavedCitiesByToken(token));
+  }
 
-    @GetMapping("/getUserByUsername")
-    public ResponseEntity<User> getUserByUsername(@RequestParam String username) {
-        return ResponseEntity.ok(userService.getUserByUsername(username));
-    }
+  @GetMapping("/getUserByUsername")
+  public ResponseEntity<User> getUserByUsername(@RequestParam String username) {
+    return ResponseEntity.ok(userService.getUserByUsername(username));
+  }
 
-    @DeleteMapping("/deleteCity")
-    public ResponseEntity<String> deleteCity(
-            @RequestParam String city,
-            @RequestHeader("Authorization") String authorizationHeader) {
-        String token = userService.getTokenFromRequest(authorizationHeader);
-        userService.deleteCity(token, city);
-        return ResponseEntity.ok("City was successfully deleted");
-    }
+  @DeleteMapping("/deleteCity")
+  public ResponseEntity<String> deleteCity(
+      @RequestParam String city, @RequestHeader("Authorization") String authorizationHeader) {
+    String token = userService.getTokenFromRequest(authorizationHeader);
+    userService.deleteCity(token, city);
+    return ResponseEntity.ok("City was successfully deleted");
+  }
 
-    @GetMapping("/byCity")
-    public ResponseEntity<List<User>> getUsersByCity(@RequestParam String cityName) {
-        return ResponseEntity.ok().body(userService.findUsersByCity(cityName));
-    }
+  @GetMapping("/byCity")
+  public ResponseEntity<List<User>> getUsersByCity(@RequestParam String cityName) {
+    return ResponseEntity.ok().body(userService.findUsersByCity(cityName));
+  }
 }

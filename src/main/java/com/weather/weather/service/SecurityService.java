@@ -25,82 +25,91 @@ import org.springframework.web.server.ResponseStatusException;
 @Service
 @Transactional
 public class SecurityService {
-    private UserRepository userRepository;
-    private PasswordEncoder passwordEncoder;
-    private AuthenticationManager authenticationManager;
-    private JwtCore jwtCore;
+  private UserRepository userRepository;
+  private PasswordEncoder passwordEncoder;
+  private AuthenticationManager authenticationManager;
+  private JwtCore jwtCore;
 
-    private CountryRepository countryRepository;
+  private CountryRepository countryRepository;
 
-    @Autowired
-    public void setUserRepository(UserRepository userRepository) {
-        this.userRepository = userRepository;
+  @Autowired
+  public void setUserRepository(UserRepository userRepository) {
+    this.userRepository = userRepository;
+  }
+
+  @Autowired
+  public void setPasswordEncoder(PasswordEncoder passwordEncoder) {
+    this.passwordEncoder = passwordEncoder;
+  }
+
+  @Autowired
+  public void setAuthenticationManager(AuthenticationManager authenticationManager) {
+    this.authenticationManager = authenticationManager;
+  }
+
+  @Autowired
+  public void setJwtCore(JwtCore jwtCore) {
+    this.jwtCore = jwtCore;
+  }
+
+  @Autowired
+  public void setCountyRepository(CountryRepository countyRepository) {
+    this.countryRepository = countyRepository;
+  }
+
+  public String register(SignUpRequest signUpRequest) {
+    if (userRepository.existsUserByUsername(signUpRequest.getUsername()).booleanValue()) {
+      throw new ResponseStatusException(HttpStatus.UNAUTHORIZED);
     }
-
-    @Autowired
-    public void setPasswordEncoder(PasswordEncoder passwordEncoder) {
-        this.passwordEncoder = passwordEncoder;
+    User user = new User();
+    user.setUsername(signUpRequest.getUsername());
+    user.setPassword(passwordEncoder.encode(signUpRequest.getPassword()));
+    Country country = countryRepository.findCountryByCountryName(signUpRequest.getCountry());
+    if (country == null) {
+      country = new Country();
+      country.setCountryName(signUpRequest.getCountry());
+      countryRepository.save(country);
     }
+    user.setCountry(country);
+    user.setRole("ROLE_USER");
+    userRepository.save(user);
+    Authentication authentication = null;
+    authentication =
+        authenticationManager.authenticate(
+            new UsernamePasswordAuthenticationToken(
+                signUpRequest.getUsername(), signUpRequest.getPassword()));
+    SecurityContextHolder.getContext().setAuthentication(authentication);
+    return jwtCore.generateToken(authentication);
+  }
 
-    @Autowired
-    public void setAuthenticationManager(AuthenticationManager authenticationManager) {
-        this.authenticationManager = authenticationManager;
+  public String login(SignInRequest signInRequest) {
+    Authentication authentication = null;
+    try {
+      authentication =
+          authenticationManager.authenticate(
+              new UsernamePasswordAuthenticationToken(
+                  signInRequest.getUsername(), signInRequest.getPassword()));
+    } catch (BadCredentialsException e) {
+      throw new ResponseStatusException(HttpStatus.UNAUTHORIZED);
     }
+    SecurityContextHolder.getContext().setAuthentication(authentication);
+    return (jwtCore.generateToken(authentication));
+  }
 
-    @Autowired
-    public void setJwtCore(JwtCore jwtCore) {
-        this.jwtCore = jwtCore;
-    }
-
-    @Autowired
-    public void setCountyRepository(CountryRepository countyRepository) {
-        this.countryRepository = countyRepository;
-    }
-
-    public String register(SignUpRequest signUpRequest) {
-        if (userRepository.existsUserByUsername(signUpRequest.getUsername()).booleanValue()) {
-            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED);
-        }
-        User user = new User();
-        user.setUsername(signUpRequest.getUsername());
-        user.setPassword(passwordEncoder.encode(signUpRequest.getPassword()));
-        Country country = countryRepository.findCountryByCountryName(signUpRequest.getCountry());
-        if (country == null) {
-            country = new Country();
-            country.setCountryName(signUpRequest.getCountry());
-            countryRepository.save(country);
-        }
-        user.setCountry(country);
-        user.setRole("ROLE_USER");
-        userRepository.save(user);
-        Authentication authentication = null;
-        authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(signUpRequest.getUsername(), signUpRequest.getPassword()));
-        SecurityContextHolder.getContext().setAuthentication(authentication);
-        return jwtCore.generateToken(authentication);
-    }
-
-    public String login(SignInRequest signInRequest) {
-        Authentication authentication = null;
-        try {
-            authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(signInRequest.getUsername(), signInRequest.getPassword()));
-        } catch (BadCredentialsException e) {
-            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED);
-        }
-        SecurityContextHolder.getContext().setAuthentication(authentication);
-        return (jwtCore.generateToken(authentication));
-    }
-
-    public void changePas(PasswordRequest passwordRequest, HttpServletRequest request) {
-        String authorizationHeader = request.getHeader("Authorization");
-        String token;
-        if (authorizationHeader != null && authorizationHeader.startsWith("Bearer ")) {
-            token = authorizationHeader.substring(7);
-        } else
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
-        String username = jwtCore.getNameFromJwt(token);
-        User user = userRepository.findUserByUsername(username).orElseThrow(() -> new UsernameNotFoundException(
-                String.format("User '%s' not found", username)));
-        user.setPassword(passwordEncoder.encode(passwordRequest.getPassword()));
-        userRepository.save(user);
-    }
+  public void changePas(PasswordRequest passwordRequest, HttpServletRequest request) {
+    String authorizationHeader = request.getHeader("Authorization");
+    String token;
+    if (authorizationHeader != null && authorizationHeader.startsWith("Bearer ")) {
+      token = authorizationHeader.substring(7);
+    } else throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
+    String username = jwtCore.getNameFromJwt(token);
+    User user =
+        userRepository
+            .findUserByUsername(username)
+            .orElseThrow(
+                () ->
+                    new UsernameNotFoundException(String.format("User '%s' not found", username)));
+    user.setPassword(passwordEncoder.encode(passwordRequest.getPassword()));
+    userRepository.save(user);
+  }
 }

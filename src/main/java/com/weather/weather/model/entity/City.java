@@ -14,12 +14,13 @@ import java.util.Set;
 @Builder
 @NoArgsConstructor
 public class City {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
-    private String cityName;
-    @JsonIgnore
-    @ManyToMany(mappedBy = "savedCities")
-    private Set<User> savedUsers = new HashSet<>();
+  @Id
+  @GeneratedValue(strategy = GenerationType.IDENTITY)
+  private Long id;
 
+  private String cityName;
+
+  @JsonIgnore
+  @ManyToMany(mappedBy = "savedCities")
+  private Set<User> savedUsers = new HashSet<>();
 }

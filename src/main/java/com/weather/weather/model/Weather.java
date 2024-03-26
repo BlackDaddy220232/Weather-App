@@ -7,8 +7,9 @@ import lombok.Data;
 @Data
 @Builder
 public class Weather {
-    @JsonProperty("main")
-    private String weatherStatus;
-    @JsonProperty("icon")
-    private String icon;
+  @JsonProperty("main")
+  private String weatherStatus;
+
+  @JsonProperty("icon")
+  private String icon;
 }

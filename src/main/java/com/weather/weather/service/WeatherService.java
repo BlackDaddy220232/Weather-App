@@ -8,14 +8,16 @@ import org.springframework.web.client.RestTemplate;
 @Service
 public class WeatherService {
 
-    @Value("${openweather.api.key}")
-    private String apiKey;
-    @Value("${api.url}")
-    private String apiUrl;
-    private final RestTemplate restTemplate = new RestTemplate();
+  @Value("${openweather.api.key}")
+  private String apiKey;
 
-    public WeatherForecast getWeatherByCity(String city) {
-        String url = apiUrl + "?q=" + city + "&appid=" + apiKey;
-        return restTemplate.getForObject(url, WeatherForecast.class);
-    }
+  @Value("${api.url}")
+  private String apiUrl;
+
+  private final RestTemplate restTemplate = new RestTemplate();
+
+  public WeatherForecast getWeatherByCity(String city) {
+    String url = apiUrl + "?q=" + city + "&appid=" + apiKey;
+    return restTemplate.getForObject(url, WeatherForecast.class);
+  }
 }
