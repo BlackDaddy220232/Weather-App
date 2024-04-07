@@ -7,6 +7,7 @@ import com.weather.weather.service.SecurityService;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
@@ -22,15 +23,12 @@ public class SecurityController {
 
   @PostMapping("/signup")
   ResponseEntity<String> signup(@RequestBody SignUpRequest signUpRequest) {
-    try {
       return ResponseEntity.ok(securityService.register(signUpRequest));
-    } catch (Exception e) {
-      return ResponseEntity.badRequest().body(e.getMessage());
-    }
   }
 
   @PostMapping("/signin")
   ResponseEntity<String> signin(@RequestBody SignInRequest signInRequest) {
+    String username = SecurityContextHolder.getContext().getAuthentication().getName();
     return ResponseEntity.ok(securityService.login(signInRequest));
   }
 

@@ -1,61 +1,63 @@
 package com.weather.weather.exception;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import com.weather.weather.model.dto.ResponseError;
+import io.jsonwebtoken.ExpiredJwtException;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.HttpRequestMethodNotSupportedException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.NoHandlerFoundException;
 
 @RestControllerAdvice
+@Slf4j
 public class ControllerExceptionHandler {
-  private static final Logger logger = LoggerFactory.getLogger(ControllerExceptionHandler.class);
 
   @ExceptionHandler({HttpClientErrorException.class})
-  public ResponseEntity<Object> handleIllegalArgumentException(
-      HttpClientErrorException ex, WebRequest request) {
-    logger.error("Error 400");
-    return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Error 400: Bad request");
+  @ResponseStatus(HttpStatus.BAD_REQUEST)
+  public ResponseError handleIllegalArgumentException(
+        HttpClientErrorException ex, WebRequest request) {
+    log.error("Error 400: Bad Request");
+    return new ResponseError(HttpStatus.BAD_REQUEST, ex.getMessage());
   }
 
-  @ExceptionHandler({NoHandlerFoundException.class})
-  public ResponseEntity<Object> handleNoResourceFoundException(
-      NoHandlerFoundException ex, WebRequest request) {
-    logger.error("Error 404");
-    return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Error 404: Not Found");
+  @ExceptionHandler({
+    NoHandlerFoundException.class,
+    UsernameNotFoundException.class,
+    CountryNotFoundException.class
+  })
+  @ResponseStatus(HttpStatus.NOT_FOUND)
+  public ResponseError handleNoResourceFoundException(
+      RuntimeException ex, WebRequest request) {
+    log.error("Error 404: Not Found");
+    return new ResponseError(HttpStatus.NOT_FOUND, ex.getMessage());
   }
 
   @ExceptionHandler({HttpRequestMethodNotSupportedException.class})
-  public ResponseEntity<Object> handleMethodNotSupportedException(
+  @ResponseStatus(HttpStatus.METHOD_NOT_ALLOWED)
+  public ResponseError handleMethodNotSupportedException(
       HttpRequestMethodNotSupportedException ex, WebRequest request) {
-    logger.error("Error 405: Method not supported");
-    return ResponseEntity.status(HttpStatus.METHOD_NOT_ALLOWED)
-        .body("Error 405: Method not supported");
+    log.error("Error 405: Method not supported");
+    return new ResponseError(HttpStatus.METHOD_NOT_ALLOWED, ex.getMessage());
+  }
+
+  @ExceptionHandler({ExpiredJwtException.class, UnauthorizedException.class})
+  @ResponseStatus(HttpStatus.UNAUTHORIZED)
+  public ResponseError handleUnauthorizedException(
+          RuntimeException ex, WebRequest request) {
+    log.error("Error 401: Unauthorized");
+    return new ResponseError(HttpStatus.UNAUTHORIZED, ex.getMessage());
   }
 
   @ExceptionHandler({RuntimeException.class})
-  public ResponseEntity<Object> handleAllExceptions(RuntimeException ex, WebRequest request) {
-    logger.error("Error 500");
-    return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-        .body("Error 500: Internal server error");
-  }
-
-  @ExceptionHandler({HttpClientErrorException.Unauthorized.class})
-  public ResponseEntity<Object> handleUnauthorizedException(
-      HttpClientErrorException.Unauthorized ex, WebRequest request) {
-    logger.error("Error 401");
-    return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Error 401: Unauthorized");
-  }
-
-  @ExceptionHandler({UsernameNotFoundException.class})
-  public ResponseEntity<Object> handleusernameNotFoundException(
-      UsernameNotFoundException ex, WebRequest request) {
-    logger.error("Error 404: User not found");
-    return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Error 404: User Not Found");
+  @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
+  public ResponseError handleAllExceptions(RuntimeException ex, WebRequest request) {
+    log.error("Error 500: Internal Server Error");
+    return new ResponseError(HttpStatus.INTERNAL_SERVER_ERROR, ex.getMessage());
   }
 }

@@ -2,6 +2,7 @@ package com.weather.weather.service;
 
 import com.weather.weather.dao.CountryRepository;
 import com.weather.weather.dao.UserRepository;
+import com.weather.weather.exception.UnauthorizedException;
 import com.weather.weather.model.dto.PasswordRequest;
 import com.weather.weather.model.dto.SignInRequest;
 import com.weather.weather.model.dto.SignUpRequest;
@@ -59,17 +60,21 @@ public class SecurityService {
 
   public String register(SignUpRequest signUpRequest) {
     if (userRepository.existsUserByUsername(signUpRequest.getUsername()).booleanValue()) {
-      throw new ResponseStatusException(HttpStatus.UNAUTHORIZED);
+      throw new UnauthorizedException(
+              String.format("Имя \"%s\" уже занято (((", signUpRequest.getUsername()));
     }
     User user = new User();
     user.setUsername(signUpRequest.getUsername());
     user.setPassword(passwordEncoder.encode(signUpRequest.getPassword()));
-    Country country = countryRepository.findCountryByCountryName(signUpRequest.getCountry());
-    if (country == null) {
-      country = new Country();
-      country.setCountryName(signUpRequest.getCountry());
-      countryRepository.save(country);
-    }
+    Country country =
+        countryRepository
+            .findCountryByCountryName(signUpRequest.getCountry())
+            .orElseGet(
+                () -> {
+                  Country newCountry = new Country();
+                  newCountry.setCountryName(signUpRequest.getCountry());
+                  return countryRepository.save(newCountry);
+                });
     user.setCountry(country);
     user.setRole("ROLE_USER");
     userRepository.save(user);
@@ -96,7 +101,7 @@ public class SecurityService {
     return (jwtCore.generateToken(authentication));
   }
 
-  public void changePas(PasswordRequest passwordRequest, HttpServletRequest request) {
+  public String changePas(PasswordRequest passwordRequest, HttpServletRequest request) {
     String authorizationHeader = request.getHeader("Authorization");
     String token;
     if (authorizationHeader != null && authorizationHeader.startsWith("Bearer ")) {
@@ -111,5 +116,6 @@ public class SecurityService {
                     new UsernameNotFoundException(String.format("User '%s' not found", username)));
     user.setPassword(passwordEncoder.encode(passwordRequest.getPassword()));
     userRepository.save(user);
+    return username;
   }
 }
