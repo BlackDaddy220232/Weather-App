@@ -51,10 +51,10 @@ public class LoggingAspect {
   }
 
   @AfterReturning(pointcut = "PointcutDefinitions.addCityToUserPointcut()")
-  public void logAddPlayer(JoinPoint joinPoint) {
+  public void logAddCity(JoinPoint joinPoint) {
     Object[] args = joinPoint.getArgs();
-    username = (String) args[0];
-    String countryName = (String) args[1];
+    username = (String) args[1];
+    String countryName = (String) args[0];
     log.info("Город {" + countryName + "} был добавлен пользователю {" + username + "}");
   }
 

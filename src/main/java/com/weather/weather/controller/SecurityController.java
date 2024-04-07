@@ -27,7 +27,6 @@ public class SecurityController {
 
   @PostMapping("/signin")
   ResponseEntity<String> signin(@RequestBody SignInRequest signInRequest) {
-    String username = SecurityContextHolder.getContext().getAuthentication().getName();
     return ResponseEntity.ok(securityService.login(signInRequest));
   }
 

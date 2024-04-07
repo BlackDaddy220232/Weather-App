@@ -22,7 +22,7 @@ public class PointcutDefinitions {
   @Pointcut("execution(* com.weather.weather.controller.CountryController.deleteCountry(..))")
   public void deleteCountryPointcut() {}
 
-  @Pointcut("execution(* com.weather.weather.controller.UserController.addCityToUser(..))")
+  @Pointcut("execution(* com.weather.weather.service.UserService.addCityToUser(..))")
   public void addCityToUserPointcut() {}
 
   @Pointcut("execution(* com.weather.weather.service.UserService.deleteCity(..))")
