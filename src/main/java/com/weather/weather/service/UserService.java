@@ -3,6 +3,7 @@ package com.weather.weather.service;
 import com.weather.weather.component.UserCache;
 import com.weather.weather.dao.CityRepository;
 import com.weather.weather.dao.UserRepository;
+import com.weather.weather.exception.CountryNotFoundException;
 import com.weather.weather.model.entity.City;
 import com.weather.weather.model.entity.User;
 import com.weather.weather.security.JwtCore;
@@ -28,7 +29,8 @@ public class UserService implements UserDetailsService {
   private UserRepository userRepository;
   private UserCache userCache;
   private JwtCore jwtCore;
-  private static final String USER_NOT_FOUND_MESSAGE = "User not found";
+  private static final String USER_NOT_FOUND_MESSAGE = "Пользователя с именем \"%s\" не существует";
+  private static final String CITY_NOT_FOUND_MESSAGE = "Города \"%s\" не существует";
 
   @Autowired
   public void setJwtCore(JwtCore jwtCore) {
@@ -56,9 +58,8 @@ public class UserService implements UserDetailsService {
         userRepository
             .findUserByUsername(username)
             .orElseThrow(
-                () -> {
-                  throw new UsernameNotFoundException("User Not Found");
-                });
+                () ->
+                    new UsernameNotFoundException(String.format("User '%s' not found", username)));
     return UserDetailsImpl.build(user);
   }
 
@@ -76,8 +77,18 @@ public class UserService implements UserDetailsService {
 
   public void addCityToUser(String cityName, String token) {
     String username = jwtCore.getNameFromJwt(token);
-    User user = userRepository.findUserByUsername(username).orElse(null);
-    City city = cityRepository.findCitiesByCityName(cityName).orElse(null);
+    User user =
+        userRepository
+            .findUserByUsername(username)
+            .orElseThrow(
+                () ->
+                    new UsernameNotFoundException(String.format("User '%s' not found", username)));
+    City city =
+        cityRepository
+            .findCitiesByCityName(cityName)
+            .orElseThrow(
+                () ->
+                    new UsernameNotFoundException(String.format("User '%s' not found", username)));
     if (city == null) {
       city = new City();
       city.setCityName(cityName);
@@ -97,18 +108,29 @@ public class UserService implements UserDetailsService {
 
   public Set<City> getSavedCitiesByToken(String token) {
     String username = jwtCore.getNameFromJwt(token);
-    Optional<User> userOptional = userRepository.findUserByUsername(username);
-    if (userOptional.isPresent()) {
-      return userOptional.get().getSavedCities();
-    } else {
-      throw new IllegalArgumentException("User with username " + username + " not found");
-    }
+    User user =
+        userRepository
+            .findUserByUsername(username)
+            .orElseThrow(
+                () ->
+                    new UsernameNotFoundException(String.format(USER_NOT_FOUND_MESSAGE, username)));
+    return user.getSavedCities();
   }
 
   public void deleteCity(String token, String cityName) {
     String username = jwtCore.getNameFromJwt(token);
-    User user = userRepository.findUserByUsername(username).orElse(null);
-    City city = cityRepository.findCitiesByCityName(cityName).orElse(null);
+    User user =
+        userRepository
+            .findUserByUsername(username)
+            .orElseThrow(
+                () ->
+                    new UsernameNotFoundException(String.format(USER_NOT_FOUND_MESSAGE, username)));
+    City city =
+        cityRepository
+            .findCitiesByCityName(cityName)
+            .orElseThrow(
+                () ->
+                    new CountryNotFoundException(String.format(CITY_NOT_FOUND_MESSAGE, cityName)));
 
     if (user != null && city != null) {
       user.getSavedCities().removeIf(savedCity -> savedCity.getCityName().equals(cityName));
@@ -142,7 +164,8 @@ public class UserService implements UserDetailsService {
         userRepository
             .findUserByUsername(username)
             .orElseThrow(
-                () -> new UsernameNotFoundException(String.format("User %s not found", username)));
+                () ->
+                    new UsernameNotFoundException(String.format(USER_NOT_FOUND_MESSAGE, username)));
     userCache.addToCache(username, user);
     return user;
   }

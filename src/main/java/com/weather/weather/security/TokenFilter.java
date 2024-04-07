@@ -1,9 +1,11 @@
 package com.weather.weather.security;
 
+import io.jsonwebtoken.ExpiredJwtException;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import lombok.Data;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -11,22 +13,27 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
+import org.springframework.web.servlet.HandlerExceptionResolver;
 
 import java.io.IOException;
-
+@Data
 @Component
 public class TokenFilter extends OncePerRequestFilter {
   private JwtCore jwtCore;
   private UserDetailsService userDetailsService;
+  private HandlerExceptionResolver handlerExceptionResolver;
 
   @Autowired
   public void setUserDetailsService(UserDetailsService userDetailsService) {
     this.userDetailsService = userDetailsService;
   }
-
   @Autowired
   public void setJwtCore(JwtCore jwtCore) {
     this.jwtCore = jwtCore;
+  }
+  @Autowired
+  public void setHandlerExceptionResolver(HandlerExceptionResolver handlerExceptionResolver) {
+    this.handlerExceptionResolver = handlerExceptionResolver;
   }
 
   @Override
@@ -54,11 +61,10 @@ public class TokenFilter extends OncePerRequestFilter {
                   userDetails, null, userDetails.getAuthorities());
           SecurityContextHolder.getContext().setAuthentication(auth);
         }
-      } catch (Exception e) {
-        logger.error("JWT token error: {}", e);
+      } catch (ExpiredJwtException e) {
+
       }
     }
-
     filterChain.doFilter(request, response);
   }
 }
