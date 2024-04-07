@@ -106,7 +106,9 @@ public class SecurityService {
     String token;
     if (authorizationHeader != null && authorizationHeader.startsWith("Bearer ")) {
       token = authorizationHeader.substring(7);
-    } else throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
+    } else {
+      throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
+    }
     String username = jwtCore.getNameFromJwt(token);
     User user =
         userRepository

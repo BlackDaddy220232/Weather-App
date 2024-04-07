@@ -3,6 +3,9 @@ package com.weather.weather.model;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Builder;
 import lombok.Data;
+/**
+ Координаты.
+ */
 
 @Data
 @Builder

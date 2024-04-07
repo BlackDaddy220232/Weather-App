@@ -22,9 +22,10 @@ public class UserController {
   public UserController(UserService userService) {
     this.userService = userService;
   }
+
   @Autowired
-  public void setJwtCore(JwtCore jwtCore){
-    this.jwtCore=jwtCore;
+  public void setJwtCore(JwtCore jwtCore) {
+    this.jwtCore = jwtCore;
   }
 
   @GetMapping("/getAllUsers")
