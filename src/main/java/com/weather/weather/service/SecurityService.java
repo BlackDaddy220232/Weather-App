@@ -61,7 +61,7 @@ public class SecurityService {
   public String register(SignUpRequest signUpRequest) {
     if (userRepository.existsUserByUsername(signUpRequest.getUsername()).booleanValue()) {
       throw new UnauthorizedException(
-              String.format("Имя \"%s\" уже занято (((", signUpRequest.getUsername()));
+          String.format("Имя \"%s\" уже занято (((", signUpRequest.getUsername()));
     }
     User user = new User();
     user.setUsername(signUpRequest.getUsername());

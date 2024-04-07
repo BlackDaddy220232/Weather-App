@@ -1,11 +1,10 @@
 package com.weather.weather.security;
 
-import io.jsonwebtoken.ExpiredJwtException;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import lombok.Data;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -13,27 +12,22 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
-import org.springframework.web.servlet.HandlerExceptionResolver;
-
 import java.io.IOException;
-@Data
+
 @Component
+@Slf4j
 public class TokenFilter extends OncePerRequestFilter {
   private JwtCore jwtCore;
   private UserDetailsService userDetailsService;
-  private HandlerExceptionResolver handlerExceptionResolver;
 
   @Autowired
   public void setUserDetailsService(UserDetailsService userDetailsService) {
     this.userDetailsService = userDetailsService;
   }
+
   @Autowired
   public void setJwtCore(JwtCore jwtCore) {
     this.jwtCore = jwtCore;
-  }
-  @Autowired
-  public void setHandlerExceptionResolver(HandlerExceptionResolver handlerExceptionResolver) {
-    this.handlerExceptionResolver = handlerExceptionResolver;
   }
 
   @Override
@@ -44,25 +38,24 @@ public class TokenFilter extends OncePerRequestFilter {
     String username = null;
     UserDetails userDetails = null;
     UsernamePasswordAuthenticationToken auth = null;
-    if (!request.getRequestURI().equals("/auth/signin")
-        && !(request.getRequestURI().equals("/auth/signup"))) {
-      try {
-        String headerAuth = request.getHeader("Authorization");
-        if (headerAuth != null && headerAuth.startsWith("Bearer ")) {
-          jwt = headerAuth.substring(7);
-        }
-        if (jwt != null) {
-          username = jwtCore.getNameFromJwt(jwt);
-        }
-        if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
-          userDetails = userDetailsService.loadUserByUsername(username);
-          auth =
-              new UsernamePasswordAuthenticationToken(
-                  userDetails, null, userDetails.getAuthorities());
-          SecurityContextHolder.getContext().setAuthentication(auth);
-        }
-      } catch (ExpiredJwtException e) {
 
+    if (!(request.getRequestURI().equals("/auth/signin"))
+        && !(request.getRequestURI().equals("/auth/signup"))) {
+      String headerAuth = request.getHeader("Authorization");
+      if (headerAuth != null && headerAuth.startsWith("Bearer ")) {
+        jwt = headerAuth.substring(7);
+        try {
+          username = jwtCore.getNameFromJwt(jwt);
+          if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
+            userDetails = userDetailsService.loadUserByUsername(username);
+            auth =
+                new UsernamePasswordAuthenticationToken(
+                    userDetails, null, userDetails.getAuthorities());
+            SecurityContextHolder.getContext().setAuthentication(auth);
+          }
+        } catch (Exception e) {
+          log.error("Invalid JWT token");
+        }
       }
     }
     filterChain.doFilter(request, response);
