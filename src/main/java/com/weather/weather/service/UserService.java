@@ -59,7 +59,7 @@ public class UserService implements UserDetailsService {
             .findUserByUsername(username)
             .orElseThrow(
                 () ->
-                    new UsernameNotFoundException(String.format("User '%s' not found", username)));
+                    new UsernameNotFoundException(String.format(USER_NOT_FOUND_MESSAGE, username)));
     return UserDetailsImpl.build(user);
   }
 
@@ -82,13 +82,13 @@ public class UserService implements UserDetailsService {
             .findUserByUsername(username)
             .orElseThrow(
                 () ->
-                    new UsernameNotFoundException(String.format("User '%s' not found", username)));
+                    new UsernameNotFoundException(String.format(USER_NOT_FOUND_MESSAGE, username)));
     City city =
         cityRepository
             .findCitiesByCityName(cityName)
             .orElseThrow(
                 () ->
-                    new UsernameNotFoundException(String.format("User '%s' not found", username)));
+                    new UsernameNotFoundException(String.format(USER_NOT_FOUND_MESSAGE, username)));
     if (city == null) {
       city = new City();
       city.setCityName(cityName);

@@ -17,24 +17,24 @@ public class CountryController {
 
   @GetMapping("/getCountryUsers")
   public ResponseEntity<Object> getCountryUsers(@RequestParam String countryName) {
-      return ResponseEntity.ok().body(countryService.getCountryUsers(countryName));
+    return ResponseEntity.ok().body(countryService.getCountryUsers(countryName));
   }
 
   @GetMapping("/getCountries")
   public ResponseEntity<Object> getCountries() {
-      return ResponseEntity.ok().body(countryService.getCountries());
+    return ResponseEntity.ok().body(countryService.getCountries());
   }
 
   @PatchMapping("/editCountryName")
   public ResponseEntity<Object> editCountryName(
       @RequestParam String countryName, String newCountryName) {
-      countryService.editCountryName(countryName, newCountryName);
-      return ResponseEntity.ok().body("Country Name has changed");
+    countryService.editCountryName(countryName, newCountryName);
+    return ResponseEntity.ok().body("Country Name has changed");
   }
 
   @DeleteMapping("/deleteCountry")
   public ResponseEntity<Object> deleteCountry(@RequestParam String countryName) {
-      countryService.deleteCountry(countryName);
-      return ResponseEntity.ok().body("Country Name has changed");
+    countryService.deleteCountry(countryName);
+    return ResponseEntity.ok().body("Country Name has changed");
   }
 }

@@ -33,7 +33,7 @@ public class UserController {
   }
 
   @PostMapping("/addCity")
-  public ResponseEntity<String> addPlayerToUser(
+  public ResponseEntity<String> addCityToUser(
       @RequestParam String city, @RequestHeader("Authorization") String authorizationHeader) {
 
     String token = userService.getTokenFromRequest(authorizationHeader);

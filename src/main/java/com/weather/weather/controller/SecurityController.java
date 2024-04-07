@@ -8,10 +8,9 @@ import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
-@Controller
+@RestController
 @RequestMapping("/auth")
 public class SecurityController {
   private SecurityService securityService;
@@ -23,7 +22,7 @@ public class SecurityController {
 
   @PostMapping("/signup")
   ResponseEntity<String> signup(@RequestBody SignUpRequest signUpRequest) {
-      return ResponseEntity.ok(securityService.register(signUpRequest));
+    return ResponseEntity.ok(securityService.register(signUpRequest));
   }
 
   @PostMapping("/signin")
