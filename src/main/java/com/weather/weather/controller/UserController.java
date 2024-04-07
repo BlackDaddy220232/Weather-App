@@ -2,6 +2,7 @@ package com.weather.weather.controller;
 
 import com.weather.weather.model.entity.City;
 import com.weather.weather.model.entity.User;
+import com.weather.weather.security.JwtCore;
 import com.weather.weather.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -15,10 +16,15 @@ import java.util.Set;
 @RequestMapping("/users")
 public class UserController {
   private final UserService userService;
+  private JwtCore jwtCore;
 
   @Autowired
   public UserController(UserService userService) {
     this.userService = userService;
+  }
+  @Autowired
+  public void setJwtCore(JwtCore jwtCore){
+    this.jwtCore=jwtCore;
   }
 
   @GetMapping("/getAllUsers")
@@ -37,7 +43,8 @@ public class UserController {
       @RequestParam String city, @RequestHeader("Authorization") String authorizationHeader) {
 
     String token = userService.getTokenFromRequest(authorizationHeader);
-    userService.addCityToUser(city, token);
+    String username = jwtCore.getNameFromJwt(token);
+    userService.addCityToUser(city, username);
     return ResponseEntity.ok("City was successfully added");
   }
 
@@ -57,7 +64,8 @@ public class UserController {
   public ResponseEntity<String> deleteCity(
       @RequestParam String city, @RequestHeader("Authorization") String authorizationHeader) {
     String token = userService.getTokenFromRequest(authorizationHeader);
-    userService.deleteCity(token, city);
+    String username = jwtCore.getNameFromJwt(token);
+    userService.deleteCity(username, city);
     return ResponseEntity.ok("City was successfully deleted");
   }
 

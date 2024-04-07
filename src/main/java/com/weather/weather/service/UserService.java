@@ -75,8 +75,7 @@ public class UserService implements UserDetailsService {
     deleteUser(user);
   }
 
-  public void addCityToUser(String cityName, String token) {
-    String username = jwtCore.getNameFromJwt(token);
+  public void addCityToUser(String cityName, String username) {
     User user =
         userRepository
             .findUserByUsername(username)
@@ -117,8 +116,7 @@ public class UserService implements UserDetailsService {
     return user.getSavedCities();
   }
 
-  public void deleteCity(String token, String cityName) {
-    String username = jwtCore.getNameFromJwt(token);
+  public void deleteCity(String username, String cityName) {
     User user =
         userRepository
             .findUserByUsername(username)
