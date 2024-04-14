@@ -95,7 +95,7 @@ public class SecurityService {
               new UsernamePasswordAuthenticationToken(
                   signInRequest.getUsername(), signInRequest.getPassword()));
     } catch (BadCredentialsException e) {
-      throw new ResponseStatusException(HttpStatus.UNAUTHORIZED);
+      throw new UnauthorizedException("Wrong password or login");
     }
     SecurityContextHolder.getContext().setAuthentication(authentication);
     return (jwtCore.generateToken(authentication));

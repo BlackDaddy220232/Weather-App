@@ -105,8 +105,7 @@ public class UserService implements UserDetailsService {
     }
   }
 
-  public Set<City> getSavedCitiesByToken(String token) {
-    String username = jwtCore.getNameFromJwt(token);
+  public Set<City> getSavedCitiesByToken(String username) {
     User user =
         userRepository
             .findUserByUsername(username)
@@ -143,7 +142,7 @@ public class UserService implements UserDetailsService {
     }
   }
 
-  public String getTokenFromRequest(String authorizationHeader) {
+  public String tokenFromRequest(String authorizationHeader) {
     String token;
     if (authorizationHeader != null && authorizationHeader.startsWith("Bearer ")) {
       token = authorizationHeader.substring(7);
