@@ -30,4 +30,7 @@ public class PointcutDefinitions {
 
   @Pointcut("execution(* com.weather.weather.service.UserService.deleteUser(..))")
   public void deleteUserPointcut() { }
+
+  @Pointcut("execution(* com.weather.weather.service.*.get*(..))")
+  public void getPointcut() { }
 }
