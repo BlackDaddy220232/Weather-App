@@ -1,15 +1,18 @@
 package com.weather.weather.service;
 
-import com.weather.weather.component.UserCache;
 import com.weather.weather.dao.CityRepository;
 import com.weather.weather.dao.UserRepository;
-import com.weather.weather.exception.CountryNotFoundException;
+import com.weather.weather.exception.CityNotFoundException;
 import com.weather.weather.model.entity.City;
 import com.weather.weather.model.entity.User;
-import com.weather.weather.security.JwtCore;
 import com.weather.weather.security.UserDetailsImpl;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.Cache;
+import org.springframework.cache.CacheManager;
+import org.springframework.cache.annotation.CacheConfig;
+import org.springframework.cache.annotation.CachePut;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -24,32 +27,20 @@ import java.util.Set;
 
 @Service
 @Transactional
+@CacheConfig(cacheNames = "dataUser")
 public class UserService implements UserDetailsService {
-  private CityRepository cityRepository;
-  private UserRepository userRepository;
-  private UserCache userCache;
-  private JwtCore jwtCore;
+  private final CityRepository cityRepository;
+  private final UserRepository userRepository;
+  private final CacheManager cacheManager;
   private static final String USER_NOT_FOUND_MESSAGE = "Пользователя с именем \"%s\" не существует";
   private static final String CITY_NOT_FOUND_MESSAGE = "Города \"%s\" не существует";
 
   @Autowired
-  public void setJwtCore(JwtCore jwtCore) {
-    this.jwtCore = jwtCore;
-  }
-
-  @Autowired
-  public void setUserCache(UserCache userCache) {
-    this.userCache = userCache;
-  }
-
-  @Autowired
-  public UserService(UserRepository userRepository) {
-    this.userRepository = userRepository;
-  }
-
-  @Autowired
-  public void setCityRepository(CityRepository cityRepository) {
+  public UserService(
+      CityRepository cityRepository, UserRepository userRepository, CacheManager cacheManager) {
     this.cityRepository = cityRepository;
+    this.userRepository = userRepository;
+    this.cacheManager = cacheManager;
   }
 
   @Override
@@ -72,10 +63,10 @@ public class UserService implements UserDetailsService {
     User user =
         userOptional.orElseThrow(
             () -> new UsernameNotFoundException(String.format(USER_NOT_FOUND_MESSAGE, username)));
-    deleteUser(user);
+    userRepository.delete(user);
   }
 
-  public void addCityToUser(String cityName, String username) {
+  public String addCityToUser(String cityName, String username) {
     User user =
         userRepository
             .findUserByUsername(username)
@@ -85,24 +76,25 @@ public class UserService implements UserDetailsService {
     City city =
         cityRepository
             .findCitiesByCityName(cityName)
-            .orElseThrow(
-                () ->
-                    new UsernameNotFoundException(String.format(USER_NOT_FOUND_MESSAGE, username)));
-    if (city == null) {
-      city = new City();
-      city.setCityName(cityName);
-      cityRepository.save(city);
-    }
-    if (user != null && city != null) {
+            .orElseGet(
+                () -> {
+                  City newCity = new City();
+                  newCity.setCityName(cityName);
+                  return cityRepository.save(newCity);
+                });
+
       Set<City> savedCities = user.getSavedCities();
       if (savedCities == null) {
         savedCities = new HashSet<>();
+      } else {
+        if (savedCities.contains(city)) {
+          return String.format("Город %s был добавлен пользователем ранее", cityName);
+        }
       }
       savedCities.add(city);
       user.setSavedCities(savedCities);
-
-      saveUser(user);
-    }
+      userRepository.save(user);
+    return String.format("Город %s был успешно добавлен", cityName);
   }
 
   public Set<City> getSavedCitiesByToken(String username) {
@@ -126,23 +118,19 @@ public class UserService implements UserDetailsService {
         cityRepository
             .findCitiesByCityName(cityName)
             .orElseThrow(
-                () ->
-                    new CountryNotFoundException(String.format(CITY_NOT_FOUND_MESSAGE, cityName)));
+                () -> new CityNotFoundException(String.format(CITY_NOT_FOUND_MESSAGE, cityName)));
 
-    if (user != null && city != null) {
       user.getSavedCities().removeIf(savedCity -> savedCity.getCityName().equals(cityName));
       userRepository.save(user);
-
+      saveUserToCache(user);
       city.getSavedUsers().removeIf(savedUser -> savedUser.getUsername().equals(username));
       cityRepository.save(city);
-
       if (city.getSavedUsers().isEmpty()) {
         cityRepository.delete(city);
       }
-    }
   }
 
-  public String tokenFromRequest(String authorizationHeader) {
+  public String getTokenFromRequest(String authorizationHeader) {
     String token;
     if (authorizationHeader != null && authorizationHeader.startsWith("Bearer ")) {
       token = authorizationHeader.substring(7);
@@ -152,32 +140,27 @@ public class UserService implements UserDetailsService {
     return token;
   }
 
+  @Cacheable
   public User getUserByUsername(String username) {
-    User user = (User) userCache.getFromCache(username);
-    if (user != null) {
-      return user;
-    }
-    user =
-        userRepository
-            .findUserByUsername(username)
-            .orElseThrow(
-                () ->
-                    new UsernameNotFoundException(String.format(USER_NOT_FOUND_MESSAGE, username)));
-    userCache.addToCache(username, user);
-    return user;
-  }
-
-  public void saveUser(User user) {
-    userRepository.save(user);
-    userCache.addToCache(user.getUsername(), user);
-  }
-
-  public void deleteUser(User user) {
-    userRepository.delete(user);
-    userCache.removeFromCache(user.getUsername());
+    return userRepository
+        .findUserByUsername(username)
+        .orElseThrow(
+            () -> new UsernameNotFoundException(String.format(USER_NOT_FOUND_MESSAGE, username)));
   }
 
   public List<User> findUsersByCity(String cityName) {
-    return userRepository.findUsersByCity(cityName);
+    return userRepository
+        .findUsersByCity(cityName)
+        .filter(users -> !users.isEmpty())
+        .orElseThrow(
+            () -> new CityNotFoundException(String.format(CITY_NOT_FOUND_MESSAGE, cityName)));
+  }
+
+  @CachePut
+  public void saveUserToCache(User user) {
+    Cache cache = cacheManager.getCache("dataUser");
+    if (cache != null) {
+      cache.put(user.getUsername(), user);
+    }
   }
 }

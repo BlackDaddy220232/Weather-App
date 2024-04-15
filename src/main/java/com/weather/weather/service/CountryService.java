@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @Transactional
@@ -37,14 +38,26 @@ public class CountryService {
   }
 
   public void editCountryName(String countryName, String newCountryName) {
-    Country country =
-        countryRepository
-            .findCountryByCountryName(countryName)
-            .orElseThrow(
-                () ->
-                    new CountryNotFoundException(
-                        String.format(COUNTRY_NOT_FOUND_MESSAGE, countryName)));
-    country.setCountryName(newCountryName);
+    Country currentCountry =
+            countryRepository
+                    .findCountryByCountryName(countryName)
+                    .orElseThrow(
+                            () ->
+                                    new CountryNotFoundException(
+                                            String.format(COUNTRY_NOT_FOUND_MESSAGE, countryName)));
+
+    Optional<Country> newCountryOptional =
+            countryRepository.findCountryByCountryName(newCountryName);
+    if (newCountryOptional.isPresent()) {
+      Country newCountry = newCountryOptional.get();
+      newCountry.getUsers().addAll(currentCountry.getUsers());
+      currentCountry.getUsers().forEach(user -> user.setCountry(newCountry));
+      countryRepository.save(newCountry);
+      deleteCountry(countryName);
+    } else {
+      currentCountry.setCountryName(newCountryName);
+      countryRepository.save(currentCountry);
+    }
   }
 
   public void deleteCountry(String countyName) {

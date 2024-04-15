@@ -89,7 +89,7 @@ public class SecurityConfigurator {
                 authorize
                     .requestMatchers("/auth/**")
                     .permitAll()
-                    .requestMatchers("/countries/**", "/users/deleteUser", "/users/getAllUsers")
+                    .requestMatchers("/countries/**", "/users/deleteUser", "/users/getAllUsers","/users/getUserByUsername")
                     .hasRole("ADMIN")
                     .anyRequest()
                     .permitAll())

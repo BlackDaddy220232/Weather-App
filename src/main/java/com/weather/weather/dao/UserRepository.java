@@ -16,5 +16,5 @@ public interface UserRepository extends JpaRepository<User, Long> {
   Boolean existsUserByUsername(String username);
 
   @Query("SELECT u FROM User u JOIN u.savedCities c WHERE c.cityName = :cityName")
-  List<User> findUsersByCity(@Param("cityName") String cityName);
+  Optional<List<User>> findUsersByCity(@Param("cityName") String cityName);
 }
