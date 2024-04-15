@@ -43,16 +43,15 @@ public class UserController {
   public ResponseEntity<String> addCityToUser(
       @RequestParam String city, @RequestHeader("Authorization") String authorizationHeader) {
 
-    String token = userService.tokenFromRequest(authorizationHeader);
+    String token = userService.getTokenFromRequest(authorizationHeader);
     String username = jwtCore.getNameFromJwt(token);
-    userService.addCityToUser(city, username);
-    return ResponseEntity.ok("City was successfully added");
+    return ResponseEntity.ok(userService.addCityToUser(city, username));
   }
 
   @GetMapping("/getAllCities")
   public ResponseEntity<Set<City>> getAllCitiesByUserName(
       @RequestHeader("Authorization") String authorizationHeader) {
-    String token = userService.tokenFromRequest(authorizationHeader);
+    String token = userService.getTokenFromRequest(authorizationHeader);
     String username = jwtCore.getNameFromJwt(token);
     return ResponseEntity.ok(userService.getSavedCitiesByToken(username));
   }
@@ -65,7 +64,7 @@ public class UserController {
   @DeleteMapping("/deleteCity")
   public ResponseEntity<String> deleteCity(
       @RequestParam String city, @RequestHeader("Authorization") String authorizationHeader) {
-    String token = userService.tokenFromRequest(authorizationHeader);
+    String token = userService.getTokenFromRequest(authorizationHeader);
     String username = jwtCore.getNameFromJwt(token);
     userService.deleteCity(username, city);
     return ResponseEntity.ok("City was successfully deleted");
