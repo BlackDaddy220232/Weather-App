@@ -43,7 +43,7 @@ public class UserController {
   public ResponseEntity<String> addCityToUser(
       @RequestParam String city, @RequestHeader("Authorization") String authorizationHeader) {
 
-    String token = userService.getTokenFromRequest(authorizationHeader);
+    String token = jwtCore.getTokenFromRequest(authorizationHeader);
     String username = jwtCore.getNameFromJwt(token);
     return ResponseEntity.ok(userService.addCityToUser(city, username));
   }
@@ -51,7 +51,7 @@ public class UserController {
   @GetMapping("/getAllCities")
   public ResponseEntity<Set<City>> getAllCitiesByUserName(
       @RequestHeader("Authorization") String authorizationHeader) {
-    String token = userService.getTokenFromRequest(authorizationHeader);
+    String token = jwtCore.getTokenFromRequest(authorizationHeader);
     String username = jwtCore.getNameFromJwt(token);
     return ResponseEntity.ok(userService.getSavedCitiesByToken(username));
   }
@@ -64,7 +64,7 @@ public class UserController {
   @DeleteMapping("/deleteCity")
   public ResponseEntity<String> deleteCity(
       @RequestParam String city, @RequestHeader("Authorization") String authorizationHeader) {
-    String token = userService.getTokenFromRequest(authorizationHeader);
+    String token = jwtCore.getTokenFromRequest(authorizationHeader);
     String username = jwtCore.getNameFromJwt(token);
     userService.deleteCity(username, city);
     return ResponseEntity.ok("City was successfully deleted");
@@ -73,5 +73,14 @@ public class UserController {
   @GetMapping("/byCity")
   public ResponseEntity<List<User>> getUsersByCity(@RequestParam String cityName) {
     return ResponseEntity.ok().body(userService.findUsersByCity(cityName));
+  }
+
+  @PostMapping("/addSomeCities")
+  public ResponseEntity<String> addSomeCities(
+      @RequestParam List<String> cities,
+      @RequestHeader("Authorization") String authorizationHeader) {
+    String token = jwtCore.getTokenFromRequest(authorizationHeader);
+    String nickname = jwtCore.getNameFromJwt(token);
+    return ResponseEntity.ok(userService.saveSomeCitiesToUser(nickname, cities));
   }
 }

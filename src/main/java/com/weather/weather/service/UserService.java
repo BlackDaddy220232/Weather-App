@@ -13,12 +13,10 @@ import org.springframework.cache.CacheManager;
 import org.springframework.cache.annotation.CacheConfig;
 import org.springframework.cache.annotation.CachePut;
 import org.springframework.cache.annotation.Cacheable;
-import org.springframework.http.HttpStatus;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
-import org.springframework.web.server.ResponseStatusException;
 
 import java.util.HashSet;
 import java.util.List;
@@ -32,8 +30,8 @@ public class UserService implements UserDetailsService {
   private final CityRepository cityRepository;
   private final UserRepository userRepository;
   private final CacheManager cacheManager;
-  private static final String USER_NOT_FOUND_MESSAGE = "Пользователя с именем \"%s\" не существует";
-  private static final String CITY_NOT_FOUND_MESSAGE = "Города \"%s\" не существует";
+  private static final String USER_NOT_FOUND_MESSAGE = "User with name \"%s\" already exists";
+  private static final String CITY_NOT_FOUND_MESSAGE = "City \"%s\" doesn't exist";
 
   @Autowired
   public UserService(
@@ -88,13 +86,13 @@ public class UserService implements UserDetailsService {
         savedCities = new HashSet<>();
       } else {
         if (savedCities.contains(city)) {
-          return String.format("Город %s был добавлен пользователем ранее", cityName);
+          return String.format("City %s was added by user earlier", cityName);
         }
       }
       savedCities.add(city);
       user.setSavedCities(savedCities);
       userRepository.save(user);
-    return String.format("Город %s был успешно добавлен", cityName);
+    return String.format("City %s was added", cityName);
   }
 
   public Set<City> getSavedCitiesByToken(String username) {
@@ -130,16 +128,6 @@ public class UserService implements UserDetailsService {
       }
   }
 
-  public String getTokenFromRequest(String authorizationHeader) {
-    String token;
-    if (authorizationHeader != null && authorizationHeader.startsWith("Bearer ")) {
-      token = authorizationHeader.substring(7);
-    } else {
-      throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
-    }
-    return token;
-  }
-
   @Cacheable
   public User getUserByUsername(String username) {
     return userRepository
@@ -162,5 +150,12 @@ public class UserService implements UserDetailsService {
     if (cache != null) {
       cache.put(user.getUsername(), user);
     }
+  }
+  public String saveSomeCitiesToUser(String nickname, List<String> cities){
+    StringBuilder message = new StringBuilder();
+    for(String city: cities){
+      message.append(addCityToUser(city,nickname)).append("\n");
+    }
+    return message.toString();
   }
 }
