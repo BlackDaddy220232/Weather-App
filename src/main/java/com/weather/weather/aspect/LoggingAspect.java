@@ -55,7 +55,7 @@ public class LoggingAspect {
         Object[] args = joinPoint.getArgs();
         username = (String) args[1];
         String countryName = (String) args[0];
-        log.info("Город {" + countryName + "} был добавлен пользователю {" + username + "}");
+        log.info("City {" + countryName + "} was added to user {" + username + "}");
     }
 
     @AfterReturning(pointcut = "PointcutDefinitions.deleteCityPointcut()")
@@ -64,9 +64,9 @@ public class LoggingAspect {
         username = (String) args[0];
         String countryName = (String) args[1];
         log.info(
-                "Город {"
+                "City {"
                         + countryName
-                        + "} был удален из списка любимых городов пользователя {"
+                        + "} was deleted from list user's cities {"
                         + username
                         + "}");
     }
@@ -75,7 +75,7 @@ public class LoggingAspect {
     public void logDeleteUser(JoinPoint joinPoint) {
         Object[] args = joinPoint.getArgs();
         username = (String) args[0];
-        log.info("Аккаунт пользователя {" + username + "} был удален");
+        log.info("User's account {" + username + "} was deleted");
     }
 
     @AfterReturning(value = "PointcutDefinitions.getPointcut()", returning = "object")

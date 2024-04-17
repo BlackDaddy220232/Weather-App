@@ -51,7 +51,7 @@ class UserServiceTest {
 
     String result = userService.addCityToUser(cityname, username);
 
-    assertEquals("Город testCity был успешно добавлен", result);
+    assertEquals("City testCity was added", result);
   }
 
   @Test
