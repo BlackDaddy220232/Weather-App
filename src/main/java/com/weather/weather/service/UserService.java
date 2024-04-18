@@ -22,6 +22,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 @Service
 @Transactional
@@ -152,10 +153,8 @@ public class UserService implements UserDetailsService {
     }
   }
   public String saveSomeCitiesToUser(String nickname, List<String> cities){
-    StringBuilder message = new StringBuilder();
-    for(String city: cities){
-      message.append(addCityToUser(city,nickname)).append("\n");
-    }
-    return message.toString();
+    return cities.stream()
+            .map(city -> addCityToUser(city, nickname))
+            .collect(Collectors.joining("\n"));
   }
 }
