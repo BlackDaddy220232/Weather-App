@@ -89,5 +89,9 @@ public class LoggingAspect {
         Object[] args = joinPoint.getArgs();
         log.info("Method {} was called with arguments {}", signatureMethod, args);
     }
+    @AfterReturning(pointcut = "PointcutDefinitions.incrementCounter()", returning = "result")
+    public void logCounter(Object result) {
+        log.info("Counter: {}", result);
+    }
 
 }
