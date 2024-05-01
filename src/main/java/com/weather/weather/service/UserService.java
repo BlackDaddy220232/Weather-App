@@ -6,6 +6,7 @@ import com.weather.weather.exception.CityNotFoundException;
 import com.weather.weather.model.entity.City;
 import com.weather.weather.model.entity.User;
 import com.weather.weather.security.UserDetailsImpl;
+import com.weather.weather.utilities.RequestCounter;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.Cache;
@@ -31,15 +32,17 @@ public class UserService implements UserDetailsService {
   private final CityRepository cityRepository;
   private final UserRepository userRepository;
   private final CacheManager cacheManager;
+  private final RequestCounter requestCounter;
   private static final String USER_NOT_FOUND_MESSAGE = "User with name \"%s\" already exists";
   private static final String CITY_NOT_FOUND_MESSAGE = "City \"%s\" doesn't exist";
 
   @Autowired
   public UserService(
-      CityRepository cityRepository, UserRepository userRepository, CacheManager cacheManager) {
+      CityRepository cityRepository, UserRepository userRepository, CacheManager cacheManager,RequestCounter requestCounter) {
     this.cityRepository = cityRepository;
     this.userRepository = userRepository;
     this.cacheManager = cacheManager;
+    this.requestCounter=requestCounter;
   }
 
   @Override
@@ -54,6 +57,7 @@ public class UserService implements UserDetailsService {
   }
 
   public List<User> getAllUsers() {
+    requestCounter.incrementCounter();
     return userRepository.findAll();
   }
 

@@ -87,9 +87,9 @@ public class SecurityConfigurator {
         .authorizeHttpRequests(
             authorize ->
                 authorize
-                    .requestMatchers("/auth/**")
+                    .requestMatchers("/auth/**","/users/getAllUsers")
                     .permitAll()
-                    .requestMatchers("/countries/**", "/users/deleteUser", "/users/getAllUsers","/users/getUserByUsername")
+                    .requestMatchers("/countries/**", "/users/deleteUser","/users/getUserByUsername")
                     .hasRole("ADMIN")
                     .anyRequest()
                     .permitAll())

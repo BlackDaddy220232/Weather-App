@@ -33,4 +33,6 @@ public class PointcutDefinitions {
 
   @Pointcut("execution(* com.weather.weather.service.*.get*(..))")
   public void getPointcut() { }
+  @Pointcut("execution(* com.weather.weather.utilities.RequestCounter.incrementCounter())")
+  public void incrementCounter() {}
 }
