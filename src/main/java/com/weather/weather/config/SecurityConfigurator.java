@@ -73,7 +73,7 @@ public class SecurityConfigurator {
                     request -> {
                       CorsConfiguration configuration = new CorsConfiguration();
                       configuration.setAllowedOrigins(
-                          Arrays.asList("http://localhost:8080","http://localhost:3003")); // Разрешенные источники
+                          Arrays.asList("http://localhost:8080","http://localhost:3001")); // Разрешенные источники
                       configuration.setAllowedMethods(
                           Arrays.asList("GET", "POST", "PUT", "DELETE")); // Разрешенные методы
                       configuration.setAllowedHeaders(
