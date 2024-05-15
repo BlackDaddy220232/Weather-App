@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.HttpClientErrorException;
 
 @RequestMapping("api/v1")
-@Controller
+@RestController
 public class WeatherController {
   String icon;
   private final WeatherService weatherService;
@@ -25,13 +25,11 @@ public class WeatherController {
   }
 
   @GetMapping(value = "/weather")
-  public String getWeather(@RequestParam String word, Model model) {
-    WeatherForecast weatherForecast = weatherService.getWeatherByCity(word);
+  public ResponseEntity<WeatherForecast> getCurrentWeather(@RequestParam String cityname, Model model) {
+    WeatherForecast weatherForecast = weatherService.getWeatherByCity(cityname);
     weatherForecast.convert();
-    icon = weatherForecast.getFromMap(weatherForecast.getWeatherIcon());
     weatherForecast.convertTime();
-    model.addAttribute("weatherForecast", weatherForecast);
-    model.addAttribute("icon", icon);
-    return "index";
+    weatherForecast.setCity(cityname);
+    return ResponseEntity.ok(weatherForecast);
   }
 }

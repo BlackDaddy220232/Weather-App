@@ -16,8 +16,9 @@ public class WeatherForecast {
   private Coordinates coordinates;
   private ClimateMetrics main;
   private int visibility;
-  private WeatherIconMap weatherIconMap = new WeatherIconMap();
-
+  private String city;
+  @JsonProperty("daily")
+  private ArrayList<WeatherForecast> daily;
   @JsonProperty("sys")
   private Time time = new Time();
 
@@ -25,10 +26,6 @@ public class WeatherForecast {
 
   public void convert() {
     main.metricConvert();
-  }
-
-  public String getFromMap(String icon) {
-    return weatherIconMap.getIconForWeather(icon);
   }
 
   public String getWeatherIcon() {

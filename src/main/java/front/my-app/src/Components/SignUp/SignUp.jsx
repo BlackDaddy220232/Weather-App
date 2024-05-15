@@ -1,61 +1,70 @@
 import React, { useState } from 'react'
-import './LoginSignUp.css'
+import './SignUp.css'
 import { FaUser } from "react-icons/fa";
 import { FaLock } from "react-icons/fa";
 import { FaEarthAmericas } from "react-icons/fa6";
+import {  Link,useNavigate } from "react-router-dom"
+import axios from "axios";
 
-export const LoginSignUp = () => {
+export const SignUp = () => {
+  
+  const navigate = useNavigate();
   
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
+  const [country, setCountry] = useState('');
 
-  const handleSubmit = async (event) => {
+   const handleSubmit = async (event) => {
     event.preventDefault(); 
-    console.log("Form submitted");
-    const formData = {
-      username: username,
-      password: password
-    };
 
-    try {
-      const response = await fetch('http://localhost:8080/auth/signin', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify(formData)
+        const data = {
+            username: username,
+            password: password,
+            country: country
+        };
+        
+        console.log(data.username);
+        console.log(data.password);
+        console.log(data.country);
+
+  
+      axios
+      .post("http://localhost:8080/auth/signup", data)
+      .then((response) => {
+          navigate("/login");
+      })
+      .catch((error) => {
+          console.error("Error:", error);
       });
-
-      if (response.ok) {
-        console.log('Login successful');
-      } else {
-
-        console.error('Login failed');
-      }
-    } catch (error) {
-      console.error('Error:', error);
-    }
   };
   return (
     <div className='container'>
-      <form action="">
+      <form onSubmit={handleSubmit}>
       <div className='header'>
-        <div className='text'>{action}</div>
+        <div className='text'>Sign Up</div>
       </div>
         <div className='inputs'>
           <div className='input'>
-            <FaUser className='icon'/>
-            <input type="username" placeholder='username' />
+            <FaUser className='iconLogin'/>
+            <input type="username" placeholder='username' 
+            value={username} 
+            onChange={(event) => setUsername(event.target.value)} 
+            required  />
           </div>
           <div className='input'>
-          <FaLock className='icon' />
-            <input type="password" placeholder='password' />
+          <FaLock className='iconLogin' />
+            <input type="password" placeholder='password'
+            value={password} 
+            onChange={(event) => setPassword(event.target.value)} 
+            required  />
           </div>
-          {action==="Login"?<div></div>:<div className='input'>
-          <FaEarthAmericas className='icon'/>
+          <div className='input'>
+          <FaEarthAmericas className='iconLogin'/>
           <label htmlFor="country"></label>
-        <select required>
-            <option value="" disabled selected hidden>Country</option> 
+        <select required 
+        value={country} 
+        onChange={(event) => setCountry(event.target.value)} >
+            <option value="" >Country</option> 
             <option value="Argentina">Argentina</option>
             <option value="Australia">Australia</option>
             <option value="Austria">Austria</option>
@@ -88,13 +97,20 @@ export const LoginSignUp = () => {
             <option value="UK">United Kingdom</option>
             <option value="USA">United States of America</option>
             <option value="Ukraine">Ukraine</option>
-        </select>
-          </div>}
+        </select> 
+          </div>
         </div>
-        <div className="submit-container">
-          <button type="submit">Login</button>
-      </div>
+       
+        <button type="submit" className='register'>Register</button>
+
+        <div className="register-link">
+          <p> Already have an account? <Link to={"/login"}> Login
+          </Link> </p>
+        </div>
       </form>
     </div>
   )
 }
+
+
+export default SignUp;

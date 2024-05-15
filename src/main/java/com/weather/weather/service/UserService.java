@@ -12,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.Cache;
 import org.springframework.cache.CacheManager;
 import org.springframework.cache.annotation.CacheConfig;
+import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.CachePut;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -68,35 +69,35 @@ public class UserService implements UserDetailsService {
             () -> new UsernameNotFoundException(String.format(USER_NOT_FOUND_MESSAGE, username)));
     userRepository.delete(user);
   }
-
+  @CachePut
   public String addCityToUser(String cityName, String username) {
     User user =
-        userRepository
-            .findUserByUsername(username)
-            .orElseThrow(
-                () ->
-                    new UsernameNotFoundException(String.format(USER_NOT_FOUND_MESSAGE, username)));
+            userRepository
+                    .findUserByUsername(username)
+                    .orElseThrow(
+                            () ->
+                                    new UsernameNotFoundException(String.format(USER_NOT_FOUND_MESSAGE, username)));
     City city =
-        cityRepository
-            .findCitiesByCityName(cityName)
-            .orElseGet(
-                () -> {
-                  City newCity = new City();
-                  newCity.setCityName(cityName);
-                  return cityRepository.save(newCity);
-                });
+            cityRepository
+                    .findCitiesByCityName(cityName)
+                    .orElseGet(
+                            () -> {
+                              City newCity = new City();
+                              newCity.setCityName(cityName);
+                              return cityRepository.save(newCity);
+                            });
 
-      Set<City> savedCities = user.getSavedCities();
-      if (savedCities == null) {
-        savedCities = new HashSet<>();
-      } else {
-        if (savedCities.contains(city)) {
-          return String.format("City %s was added by user earlier", cityName);
-        }
+    Set<City> savedCities = user.getSavedCities();
+    if (savedCities == null) {
+      savedCities = new HashSet<>();
+    } else {
+      if (savedCities.contains(city)) {
+        return String.format("City %s was added by user earlier", cityName);
       }
-      savedCities.add(city);
-      user.setSavedCities(savedCities);
-      userRepository.save(user);
+    }
+    savedCities.add(city);
+    user.setSavedCities(savedCities);
+    userRepository.save(user);
     return String.format("City %s was added", cityName);
   }
 
@@ -109,7 +110,7 @@ public class UserService implements UserDetailsService {
                     new UsernameNotFoundException(String.format(USER_NOT_FOUND_MESSAGE, username)));
     return user.getSavedCities();
   }
-
+@CacheEvict
   public void deleteCity(String username, String cityName) {
     User user =
         userRepository
