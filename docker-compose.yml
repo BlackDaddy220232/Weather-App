@@ -1,0 +1,42 @@
+version: '3.8'
+
+services:
+  frontend:
+    container_name: Weather-frontend
+    build:
+      context: src/main/java/front/my-app
+      dockerfile: Dockerfile
+    ports:
+      - "3000:3000"
+    depends_on:
+      - backend
+    networks:
+      - my-network
+
+  backend:
+    container_name: Weather-backend
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "8080:8080"
+    depends_on:
+      - postgresql
+    networks:
+      - my-network
+
+  postgresql:
+    image: postgres
+    container_name: Weather-db
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_DB: weather-db
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: Sasha_336
+    networks:
+      - my-network
+
+networks:
+  my-network:
+    driver: bridge
