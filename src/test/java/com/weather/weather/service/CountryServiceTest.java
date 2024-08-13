@@ -31,7 +31,7 @@ class CountryServiceTest {
     @Test
     void testGetCountryUsers_WhenCountryExists() {
         String countryName = "TestCountry";
-        Country country = new Country();
+        country = new Country();
         List<User> users = new ArrayList<>();
         users.add(new User());
         users.add(new User());
@@ -127,7 +127,7 @@ class CountryServiceTest {
     @Test
     void testDeleteCountry_WhenCountryExists() {
         String countryName = "TestCountry";
-        Country country = new Country();
+        country = new Country();
 
         when(countryRepository.findCountryByCountryName(countryName)).thenReturn(Optional.of(country));
         countryService.deleteCountry(countryName);

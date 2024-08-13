@@ -59,8 +59,6 @@ class SecurityServiceTest {
         when(countryRepository.save(any())).thenReturn(new Country());
         when(passwordEncoder.encode(signUpRequest.getPassword())).thenReturn("encodedPassword");
 
-        String token = securityService.register(signUpRequest);
-
         verify(userRepository, times(1)).save(any());
         verify(authenticationManager, times(1)).authenticate(any());
         verify(jwtCore, times(1)).generateToken(any());
