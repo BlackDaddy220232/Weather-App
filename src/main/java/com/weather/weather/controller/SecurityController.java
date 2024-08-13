@@ -4,7 +4,9 @@ import com.weather.weather.model.dto.PasswordRequest;
 import com.weather.weather.model.dto.SignInRequest;
 import com.weather.weather.model.dto.SignUpRequest;
 import com.weather.weather.service.SecurityService;
+import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -25,8 +27,13 @@ public class SecurityController {
   }
 
   @PostMapping("/signin")
-  ResponseEntity<String> signin(@RequestBody SignInRequest signInRequest) {
-    return ResponseEntity.ok(securityService.login(signInRequest));
+  public void signin(@RequestBody SignInRequest signInRequest, HttpServletResponse response) {
+    String token = securityService.login(signInRequest);
+    Cookie cookie = new Cookie("token", token);
+    cookie.setHttpOnly(true);
+    cookie.setSecure(true);
+    cookie.setPath("/");
+    response.addCookie(cookie);
   }
 
   @PatchMapping("/editPassword")

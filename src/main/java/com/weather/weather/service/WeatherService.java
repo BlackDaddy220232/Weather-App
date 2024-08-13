@@ -18,7 +18,6 @@ public class WeatherService {
 
   public WeatherForecast getWeatherByCity(String city) {
     String url = apiUrl + "?q=" + city + "&exclude=current,daily"+ "&appid=" + apiKey;
-    System.out.println(url);
     return restTemplate.getForObject(url, WeatherForecast.class);
   }
 }

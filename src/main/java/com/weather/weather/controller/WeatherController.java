@@ -4,7 +4,6 @@ import com.weather.weather.model.WeatherForecast;
 import com.weather.weather.service.WeatherService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.HttpClientErrorException;
