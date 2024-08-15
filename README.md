@@ -2,7 +2,20 @@
 
 # What is it?
 
-The Weather App is a Java-based application that provides weather forecasts. It fetches weather data from Open Weather and displays it to the user.
+The Weather Application is a RESTful web service built using the Spring Framework. It provides users with the ability to retrieve weather information, manage their favorite cities, and perform various other weather-related operations.
+
+## Sonar Cloud
+
+[![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=BlackDaddy220232_Weather-App&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=BlackDaddy220232_Weather-App)
+[![Bugs](https://sonarcloud.io/api/project_badges/measure?project=BlackDaddy220232_Weather-App&metric=bugs)](https://sonarcloud.io/summary/new_code?id=BlackDaddy220232_Weather-App)
+[![Code Smells](https://sonarcloud.io/api/project_badges/measure?project=BlackDaddy220232_Weather-App&metric=code_smells)](https://sonarcloud.io/summary/new_code?id=BlackDaddy220232_Weather-App)
+
+This project is integrated with the Sonor Cloud platform, which provides advanced code analysis and quality assurance tools to help us deliver high-quality, maintainable code.
+
+## API Reference
+### Postman
+To interact with the "Weather Application" application's RESTful API endpoints, you can use the Postman request by this [link](https://web.postman.co/workspace/418c05a9-fb59-4c30-87b1-e05864cd4746). Tap ```create a fork``` and use Postman for doing request.
+#### Get all author's articles
 
 ## Prerequisites
 
