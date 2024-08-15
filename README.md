@@ -43,7 +43,7 @@ PATCH /auth/editPassword
 POST /auth/signin
 ```
 
-| Parameter | Type     | Description                |
+| Body | Type     | Description                |
 | :-------- | :------- | :------------------------- |
 | `username` | `string` | **Required**. Nickname of user |
 | `password` | `string` | **Required**. Password of user |
