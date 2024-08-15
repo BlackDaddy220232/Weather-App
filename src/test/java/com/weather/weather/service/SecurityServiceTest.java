@@ -46,7 +46,6 @@ class SecurityServiceTest {
 
     @Test
     void testRegister_NewUser_Success() {
-        // Arrange
         SignUpRequest signUpRequest =
                 SignUpRequest.builder()
                         .username("username")
@@ -58,6 +57,8 @@ class SecurityServiceTest {
                 .thenReturn(Optional.empty());
         when(countryRepository.save(any())).thenReturn(new Country());
         when(passwordEncoder.encode(signUpRequest.getPassword())).thenReturn("encodedPassword");
+
+        securityService.register(signUpRequest);
 
         verify(userRepository, times(1)).save(any());
         verify(authenticationManager, times(1)).authenticate(any());

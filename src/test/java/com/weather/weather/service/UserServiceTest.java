@@ -4,20 +4,21 @@ import com.weather.weather.dao.CityRepository;
 import com.weather.weather.dao.UserRepository;
 import com.weather.weather.exception.CityNotFoundException;
 import com.weather.weather.model.entity.City;
+import com.weather.weather.model.entity.Country;
 import com.weather.weather.model.entity.User;
 import com.weather.weather.security.JwtCore;
+import org.checkerframework.checker.units.qual.C;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.cache.Cache;
 import org.springframework.cache.CacheManager;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
@@ -27,8 +28,8 @@ class UserServiceTest {
   @InjectMocks private UserService userService;
   @Mock private CityRepository cityRepository;
   @Mock private UserRepository userRepository;
+  @Mock private Cache cache;
   @Mock private CacheManager cacheManager;
-
   @Test
   void deleteUser() {
     User user = new User();
@@ -52,6 +53,31 @@ class UserServiceTest {
     String result = userService.addCityToUser(cityname, username);
 
     assertEquals("City testCity was added", result);
+  }
+  @Test
+  void testAddCityToUser_CityExists(){
+    String username = "testUser";
+    String cityname = "testCity";
+
+    User user = new User();
+    City city=new City();
+    city.setCityName("testCity");
+    Set<City> savedCities =new HashSet<>();
+    savedCities.add(city);
+    user.setSavedCities(savedCities);
+
+    when(userRepository.findUserByUsername(username)).thenReturn(Optional.of(user));
+    when(cityRepository.findCitiesByCityName(cityname)).thenReturn(Optional.of(city));
+    String result=userService.addCityToUser(cityname,username);
+    assertEquals("City testCity was added by user earlier",result);
+  }
+
+  @Test
+  void testAddCityToUser_NoSuchUser(){
+    String username="NonExistedTestUser";
+    String cityname="testCity";
+    when(userRepository.findUserByUsername(username)).thenReturn(Optional.empty());
+    assertThrows(UsernameNotFoundException.class,()->userService.addCityToUser(cityname,username));
   }
 
   @Test
@@ -195,5 +221,53 @@ class UserServiceTest {
       userService.deleteCity(username, cityName);
     });
     verify(userRepository, never()).save(any());
+  }
+  @Test
+  void testSaveUserToCache() {
+    // Arrange
+    User user = new User();
+    when(cacheManager.getCache("dataUser")).thenReturn(cache);
+
+    // Act
+    userService.saveUserToCache(user);
+
+    // Assert
+    verify(cache, times(1)).put(user.getUsername(), user);
+  }
+
+  @Test
+  void testSaveUserToCache_CacheNotFound() {
+    // Arrange
+    User user = new User();
+    when(cacheManager.getCache("dataUser")).thenReturn(null);
+
+    // Act
+    userService.saveUserToCache(user);
+
+    // Verify that no interaction with the cache occurred
+    verifyNoInteractions(cache);
+  }
+  @Test
+  void testGetSavedCitiesByUsername_WhenUserExists() {
+    String username = "testUser";
+    User user = new User();
+    Set<City> favoritePlayers = new HashSet<>();
+    favoritePlayers.add(new City());
+    user.setSavedCities(favoritePlayers);
+    when(userRepository.findUserByUsername(username)).thenReturn(Optional.of(user));
+    assertEquals(favoritePlayers, userService.getSavedCitiesByUsername(username));
+  }
+
+  @Test
+  void testGetSavedCitiesByUsername_WhenUserDoesNotExist() {
+
+    String username = "nonExistentUser";
+    when(userRepository.findUserByUsername(username)).thenReturn(Optional.empty());
+
+    assertThrows(
+            UsernameNotFoundException.class,
+            () -> {
+              userService.getSavedCitiesByUsername(username);
+            });
   }
 }

@@ -1,9 +1,11 @@
 package com.weather.weather.controller;
 
+import com.weather.weather.aspect.PointcutDefinitions;
 import com.weather.weather.model.entity.City;
 import com.weather.weather.model.entity.User;
 import com.weather.weather.security.JwtCore;
 import com.weather.weather.service.UserService;
+import com.weather.weather.utilities.RequestCounter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -17,7 +19,12 @@ import java.util.Set;
 public class UserController {
   private final UserService userService;
   private JwtCore jwtCore;
+  private RequestCounter requestCounter;
 
+  @Autowired
+  public void setRequestCounter(RequestCounter requestCounter){
+    this.requestCounter=requestCounter;
+  }
   @Autowired
   public UserController(UserService userService) {
     this.userService = userService;
@@ -30,6 +37,7 @@ public class UserController {
 
   @GetMapping("/getAllUsers")
   public ResponseEntity<List<User>> getAllUsers() {
+    requestCounter.incrementCounter();
     return new ResponseEntity<>(userService.getAllUsers(), HttpStatus.OK);
   }
 
@@ -53,7 +61,7 @@ public class UserController {
       @RequestHeader("Authorization") String authorizationHeader) {
     String token = jwtCore.getTokenFromRequest(authorizationHeader);
     String username = jwtCore.getNameFromJwt(token);
-    return ResponseEntity.ok(userService.getSavedCitiesByToken(username));
+    return ResponseEntity.ok(userService.getSavedCitiesByUsername(username));
   }
 
   @GetMapping("/getUserByUsername")
@@ -75,12 +83,12 @@ public class UserController {
     return ResponseEntity.ok().body(userService.findUsersByCity(cityName));
   }
 
-  @PostMapping("/addSomeCities")
+  /*@PostMapping("/addSomeCities")
   public ResponseEntity<String> addSomeCities(
       @RequestParam List<String> cities,
       @RequestHeader("Authorization") String authorizationHeader) {
     String token = jwtCore.getTokenFromRequest(authorizationHeader);
     String nickname = jwtCore.getNameFromJwt(token);
     return ResponseEntity.ok(userService.saveSomeCitiesToUser(nickname, cities));
-  }
+  }*/
 }

@@ -27,13 +27,14 @@ public class SecurityController {
   }
 
   @PostMapping("/signin")
-  public void signin(@RequestBody SignInRequest signInRequest, HttpServletResponse response) {
+  public String signin(@RequestBody SignInRequest signInRequest, HttpServletResponse response) {
     String token = securityService.login(signInRequest);
     Cookie cookie = new Cookie("token", token);
     cookie.setHttpOnly(true);
     cookie.setSecure(true);
     cookie.setPath("/");
     response.addCookie(cookie);
+    return token; //Delete this in relies version
   }
 
   @PatchMapping("/editPassword")

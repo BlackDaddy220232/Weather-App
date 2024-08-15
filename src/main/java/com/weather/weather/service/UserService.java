@@ -33,7 +33,6 @@ public class UserService implements UserDetailsService {
   private final CityRepository cityRepository;
   private final UserRepository userRepository;
   private final CacheManager cacheManager;
-  private final RequestCounter requestCounter;
   private static final String USER_NOT_FOUND_MESSAGE = "User with name \"%s\" already exists";
   private static final String CITY_NOT_FOUND_MESSAGE = "City \"%s\" doesn't exist";
 
@@ -43,7 +42,6 @@ public class UserService implements UserDetailsService {
     this.cityRepository = cityRepository;
     this.userRepository = userRepository;
     this.cacheManager = cacheManager;
-    this.requestCounter=requestCounter;
   }
 
   @Override
@@ -58,7 +56,6 @@ public class UserService implements UserDetailsService {
   }
 
   public List<User> getAllUsers() {
-    requestCounter.incrementCounter();
     return userRepository.findAll();
   }
 
@@ -88,12 +85,8 @@ public class UserService implements UserDetailsService {
                             });
 
     Set<City> savedCities = user.getSavedCities();
-    if (savedCities == null) {
-      savedCities = new HashSet<>();
-    } else {
       if (savedCities.contains(city)) {
         return String.format("City %s was added by user earlier", cityName);
-      }
     }
     savedCities.add(city);
     user.setSavedCities(savedCities);
@@ -101,7 +94,7 @@ public class UserService implements UserDetailsService {
     return String.format("City %s was added", cityName);
   }
 
-  public Set<City> getSavedCitiesByToken(String username) {
+  public Set<City> getSavedCitiesByUsername(String username) {
     User user =
         userRepository
             .findUserByUsername(username)
