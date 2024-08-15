@@ -27,6 +27,7 @@ public class JwtCore {
         .signWith(SignatureAlgorithm.HS256, secret)
         .compact();
   }
+
   public String getTokenFromRequest(String authorizationHeader) {
     String token;
     if (authorizationHeader != null && authorizationHeader.startsWith("Bearer ")) {
@@ -36,6 +37,7 @@ public class JwtCore {
     }
     return token;
   }
+
   public String getNameFromJwt(String token) {
     return Jwts.parser().setSigningKey(secret).build().parseClaimsJws(token).getBody().getSubject();
   }

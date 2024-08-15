@@ -5,9 +5,7 @@ import java.util.Optional;
 import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
 
-/**
- * Репозиторий для доступа к данным о городах.
- */
+/** Репозиторий для доступа к данным о городах. */
 public interface CityRepository extends JpaRepository<City, Long> {
 
   /**

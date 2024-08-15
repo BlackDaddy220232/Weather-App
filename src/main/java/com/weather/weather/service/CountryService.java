@@ -39,15 +39,15 @@ public class CountryService {
 
   public void editCountryName(String countryName, String newCountryName) {
     Country currentCountry =
-            countryRepository
-                    .findCountryByCountryName(countryName)
-                    .orElseThrow(
-                            () ->
-                                    new CountryNotFoundException(
-                                            String.format(COUNTRY_NOT_FOUND_MESSAGE, countryName)));
+        countryRepository
+            .findCountryByCountryName(countryName)
+            .orElseThrow(
+                () ->
+                    new CountryNotFoundException(
+                        String.format(COUNTRY_NOT_FOUND_MESSAGE, countryName)));
 
     Optional<Country> newCountryOptional =
-            countryRepository.findCountryByCountryName(newCountryName);
+        countryRepository.findCountryByCountryName(newCountryName);
     if (newCountryOptional.isPresent()) {
       Country newCountry = newCountryOptional.get();
       newCountry.getUsers().addAll(currentCountry.getUsers());

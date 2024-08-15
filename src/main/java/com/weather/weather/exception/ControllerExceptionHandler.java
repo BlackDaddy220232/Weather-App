@@ -13,10 +13,8 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.NoHandlerFoundException;
-/**
-Обработчик исключения контроллеров.
- */
 
+/** Обработчик исключения контроллеров. */
 @RestControllerAdvice
 @Slf4j
 public class ControllerExceptionHandler {

@@ -7,10 +7,9 @@ import org.springframework.stereotype.Service;
 @Service
 @Scope("singleton")
 public class RequestCounter {
-    private final AtomicInteger counter = new AtomicInteger(0);
+  private final AtomicInteger counter = new AtomicInteger(0);
 
-    public synchronized int incrementCounter() {
-        return counter.incrementAndGet();
-    }
+  public synchronized int incrementCounter() {
+    return counter.incrementAndGet();
+  }
 }
-

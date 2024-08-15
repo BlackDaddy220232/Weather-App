@@ -24,7 +24,8 @@ public class WeatherController {
   }
 
   @GetMapping(value = "/weather")
-  public ResponseEntity<WeatherForecast> getCurrentWeather(@RequestParam String cityname, Model model) {
+  public ResponseEntity<WeatherForecast> getCurrentWeather(
+      @RequestParam String cityname, Model model) {
     WeatherForecast weatherForecast = weatherService.getWeatherByCity(cityname);
     weatherForecast.convert();
     weatherForecast.convertTime();

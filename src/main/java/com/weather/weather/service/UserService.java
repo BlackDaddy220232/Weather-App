@@ -38,7 +38,10 @@ public class UserService implements UserDetailsService {
 
   @Autowired
   public UserService(
-      CityRepository cityRepository, UserRepository userRepository, CacheManager cacheManager,RequestCounter requestCounter) {
+      CityRepository cityRepository,
+      UserRepository userRepository,
+      CacheManager cacheManager,
+      RequestCounter requestCounter) {
     this.cityRepository = cityRepository;
     this.userRepository = userRepository;
     this.cacheManager = cacheManager;
@@ -66,27 +69,28 @@ public class UserService implements UserDetailsService {
             () -> new UsernameNotFoundException(String.format(USER_NOT_FOUND_MESSAGE, username)));
     userRepository.delete(user);
   }
+
   @CachePut
   public String addCityToUser(String cityName, String username) {
     User user =
-            userRepository
-                    .findUserByUsername(username)
-                    .orElseThrow(
-                            () ->
-                                    new UsernameNotFoundException(String.format(USER_NOT_FOUND_MESSAGE, username)));
+        userRepository
+            .findUserByUsername(username)
+            .orElseThrow(
+                () ->
+                    new UsernameNotFoundException(String.format(USER_NOT_FOUND_MESSAGE, username)));
     City city =
-            cityRepository
-                    .findCitiesByCityName(cityName)
-                    .orElseGet(
-                            () -> {
-                              City newCity = new City();
-                              newCity.setCityName(cityName);
-                              return cityRepository.save(newCity);
-                            });
+        cityRepository
+            .findCitiesByCityName(cityName)
+            .orElseGet(
+                () -> {
+                  City newCity = new City();
+                  newCity.setCityName(cityName);
+                  return cityRepository.save(newCity);
+                });
 
     Set<City> savedCities = user.getSavedCities();
-      if (savedCities.contains(city)) {
-        return String.format("City %s was added by user earlier", cityName);
+    if (savedCities.contains(city)) {
+      return String.format("City %s was added by user earlier", cityName);
     }
     savedCities.add(city);
     user.setSavedCities(savedCities);
@@ -103,7 +107,8 @@ public class UserService implements UserDetailsService {
                     new UsernameNotFoundException(String.format(USER_NOT_FOUND_MESSAGE, username)));
     return user.getSavedCities();
   }
-@CacheEvict
+
+  @CacheEvict
   public void deleteCity(String username, String cityName) {
     User user =
         userRepository
@@ -117,14 +122,14 @@ public class UserService implements UserDetailsService {
             .orElseThrow(
                 () -> new CityNotFoundException(String.format(CITY_NOT_FOUND_MESSAGE, cityName)));
 
-      user.getSavedCities().removeIf(savedCity -> savedCity.getCityName().equals(cityName));
-      userRepository.save(user);
-      saveUserToCache(user);
-      city.getSavedUsers().removeIf(savedUser -> savedUser.getUsername().equals(username));
-      cityRepository.save(city);
-      if (city.getSavedUsers().isEmpty()) {
-        cityRepository.delete(city);
-      }
+    user.getSavedCities().removeIf(savedCity -> savedCity.getCityName().equals(cityName));
+    userRepository.save(user);
+    saveUserToCache(user);
+    city.getSavedUsers().removeIf(savedUser -> savedUser.getUsername().equals(username));
+    cityRepository.save(city);
+    if (city.getSavedUsers().isEmpty()) {
+      cityRepository.delete(city);
+    }
   }
 
   @Cacheable
@@ -150,9 +155,10 @@ public class UserService implements UserDetailsService {
       cache.put(user.getUsername(), user);
     }
   }
-  public String saveSomeCitiesToUser(String nickname, List<String> cities){
+
+  public String saveSomeCitiesToUser(String nickname, List<String> cities) {
     return cities.stream()
-            .map(city -> addCityToUser(city, nickname))
-            .collect(Collectors.joining("\n"));
+        .map(city -> addCityToUser(city, nickname))
+        .collect(Collectors.joining("\n"));
   }
 }

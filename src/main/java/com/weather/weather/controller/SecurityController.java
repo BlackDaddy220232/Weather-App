@@ -34,7 +34,7 @@ public class SecurityController {
     cookie.setSecure(true);
     cookie.setPath("/");
     response.addCookie(cookie);
-    return token; //Delete this in relies version
+    return token; // Delete this in relies version
   }
 
   @PatchMapping("/editPassword")

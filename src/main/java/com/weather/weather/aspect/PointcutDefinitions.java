@@ -8,31 +8,32 @@ import org.springframework.stereotype.Component;
 @Component
 public class PointcutDefinitions {
   @Pointcut("execution(* com.weather.weather.controller.SecurityController.signup(..))")
-  public void signupPointcut() { }
+  public void signupPointcut() {}
 
   @Pointcut("execution(* com.weather.weather.controller.SecurityController.signin(..))")
-  public void signinPointcut() { }
+  public void signinPointcut() {}
 
   @Pointcut("execution(* com.weather.weather.service.SecurityService.changePas(..))")
-  public void editPasswordPointcut() { }
+  public void editPasswordPointcut() {}
 
   @Pointcut("execution(* com.weather.weather.controller.CountryController.editCountryName(..))")
-  public void editCountryNamePointcut() { }
+  public void editCountryNamePointcut() {}
 
   @Pointcut("execution(* com.weather.weather.controller.CountryController.deleteCountry(..))")
-  public void deleteCountryPointcut() { }
+  public void deleteCountryPointcut() {}
 
   @Pointcut("execution(* com.weather.weather.service.UserService.addCityToUser(..))")
-  public void addCityToUserPointcut() { }
+  public void addCityToUserPointcut() {}
 
   @Pointcut("execution(* com.weather.weather.service.UserService.deleteCity(..))")
-  public void deleteCityPointcut() { }
+  public void deleteCityPointcut() {}
 
   @Pointcut("execution(* com.weather.weather.service.UserService.deleteUser(..))")
-  public void deleteUserPointcut() { }
+  public void deleteUserPointcut() {}
 
   @Pointcut("execution(* com.weather.weather.service.*.get*(..))")
-  public void getPointcut() { }
+  public void getPointcut() {}
+
   @Pointcut("execution(* com.weather.weather.utilities.RequestCounter.incrementCounter())")
   public void incrementCounter() {}
 }

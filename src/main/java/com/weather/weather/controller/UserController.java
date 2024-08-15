@@ -22,9 +22,10 @@ public class UserController {
   private RequestCounter requestCounter;
 
   @Autowired
-  public void setRequestCounter(RequestCounter requestCounter){
-    this.requestCounter=requestCounter;
+  public void setRequestCounter(RequestCounter requestCounter) {
+    this.requestCounter = requestCounter;
   }
+
   @Autowired
   public UserController(UserService userService) {
     this.userService = userService;
