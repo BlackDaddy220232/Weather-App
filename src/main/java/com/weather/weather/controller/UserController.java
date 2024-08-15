@@ -1,6 +1,5 @@
 package com.weather.weather.controller;
 
-import com.weather.weather.aspect.PointcutDefinitions;
 import com.weather.weather.model.entity.City;
 import com.weather.weather.model.entity.User;
 import com.weather.weather.security.JwtCore;
@@ -22,10 +21,9 @@ public class UserController {
   private RequestCounter requestCounter;
 
   @Autowired
-  public void setRequestCounter(RequestCounter requestCounter) {
-    this.requestCounter = requestCounter;
+  public void setRequestCounter(RequestCounter requestCounter){
+    this.requestCounter=requestCounter;
   }
-
   @Autowired
   public UserController(UserService userService) {
     this.userService = userService;
@@ -84,12 +82,12 @@ public class UserController {
     return ResponseEntity.ok().body(userService.findUsersByCity(cityName));
   }
 
-  /*@PostMapping("/addSomeCities")
+  @PostMapping("/addSomeCities")
   public ResponseEntity<String> addSomeCities(
       @RequestParam List<String> cities,
       @RequestHeader("Authorization") String authorizationHeader) {
     String token = jwtCore.getTokenFromRequest(authorizationHeader);
     String nickname = jwtCore.getNameFromJwt(token);
     return ResponseEntity.ok(userService.saveSomeCitiesToUser(nickname, cities));
-  }*/
+  }
 }
