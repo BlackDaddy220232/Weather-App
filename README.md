@@ -162,10 +162,6 @@ POST /users/addSomeCities?cities=${cityname1}&cities={cityname2}
 ```bash
 cd Weather-App\src\main\resources
 ```
-#### 2. Launch ```Setup.bat```
-```bash
-Setup.bat
-```
 #### 3. Open ```application.properties```****
 
 #### 4. Please provide your username and password, API key, JWT secket, duration of session in the designated fields.
